@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full text-center text-[32px]">
+  <div class="w-full text-center">
     <div class="flex flex-col items-center">
-      <h1 class="heroHeading leading-9 mb-[27px]">
+      <h1 class="leading-9 mb-[27px] text-[32px]">
         <span class="heroHeading-1">Artificial</span>
         <span class="heroHeading-2">Intelligence</span>
         <span class="heroHeading-3">Prompt </span>
@@ -9,7 +9,7 @@
       </h1>
       <p class="text-[14px] font-semibold paragraphColor w-[250px] mx-auto">
         Libraier's library has hundreds of prompts for your technical,
-        scientific, historic, and daily needs !
+        scientific, historic, and daily needs!
       </p>
       <button
         class="text-[14px] text-[#001C30] font-medium block w-[241px] bg-white rounded-md mt-[40px] mb-[20px] py-[5.5px] buttonShadow"
@@ -62,10 +62,7 @@
   color: transparent;
   font-weight: 700;
 }
-.paragraphColor {
-  color: #111827;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
+
 .buttonShadow {
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }

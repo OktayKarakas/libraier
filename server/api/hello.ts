@@ -7,9 +7,7 @@ export default defineEventHandler(() => {
 
   return main()
     .then((users) => {
-      // Process the 'users' data if needed
-      console.log(users);
-      return { users }; // This return will be the final response from the API
+      return { users };
     })
     .catch(async (e) => {
       console.error(e);
