@@ -2,7 +2,7 @@
   <LandingTryItNowTitleText />
   <LandingTryItNowCodeBlock />
   <button
-    class="button-shadow text-[#001C30] block w-[241px] bg-white rounded-md mt-[40px] mb-[20px] py-[5.5px] buttonShadow mx-auto"
+    class="button-shadow text-[#001C30] block w-[241px] bg-white rounded-md mt-[40px] mb-[70px] py-[5.5px] buttonShadow mx-auto"
   >
     <span class="mr-1 ml-1 button-text-shadow text-[14px] font-medium"
       >See All Prompts</span
