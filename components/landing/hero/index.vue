@@ -7,7 +7,9 @@
         <span class="heroHeading-3">Prompt </span>
         <span class="heroHeading-4">Library</span>
       </h1>
-      <p class="text-[14px] font-semibold paragraphColor w-[250px] mx-auto">
+      <p
+        class="text-[14px] font-semibold paragraphColor leading-6 w-[250px] mx-auto"
+      >
         Libraier's library has hundreds of prompts for your technical,
         scientific, historic, and daily needs!
       </p>
