@@ -2,8 +2,8 @@
   <div class="w-full text-center">
     <div class="flex flex-col items-center">
       <h1 class="leading-9 mb-[27px] text-[32px]">
-        <span class="heroHeading-1">Artificial</span>
-        <span class="heroHeading-2">Intelligence</span>
+        <span class="heroHeading-1 block">Artificial</span>
+        <span class="heroHeading-2 block">Intelligence</span>
         <span class="heroHeading-3">Prompt </span>
         <span class="heroHeading-4">Library</span>
       </h1>
@@ -37,7 +37,6 @@
   -webkit-background-clip: text; /* For Safari/Chrome */
   background-clip: text;
   color: transparent;
-  display: block;
   font-weight: 700;
 }
 .heroHeading-2 {
@@ -45,7 +44,6 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  display: block;
   font-weight: 700;
 }
 .heroHeading-3 {
