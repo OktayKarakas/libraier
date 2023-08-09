@@ -2,7 +2,11 @@
   <div
     class="w-full pl-2 pr-2.5 pt-5 flex justify-between mb-[63px] items-center"
   >
-    <img src="~/assets/ui/header/logo-mobile.svg" />
+    <img
+      src="~/assets/ui/header/logo-mobile.svg"
+      @click="async () => await navigateTo('/')"
+      class="cursor-pointer"
+    />
     <img
       v-if="!isHeaderOpen"
       @click="store.changeHeaderStatus"
