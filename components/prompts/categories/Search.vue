@@ -8,7 +8,7 @@
         class="w-[281px] h-[45px] bg-white gap-5 flex items-center rounded-[10px] mx-auto"
       >
         <img
-          src="~/assets/categories/SearchIcon.svg"
+          src="~/assets/categories/searchIcon.svg"
           class="w-[12px] h-[12px] ml-[12px]"
         />
         <input
