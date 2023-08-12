@@ -3,18 +3,19 @@
     <div class="grid grid-cols-2 gap-[20px] w-[281px] mx-auto mb-[60px]">
       <div
         class="w-[130px] h-[143px] promptBlock text-center flex items-center cursor-pointer"
-        v-for="prompt in filteredArr"
-        :key="prompt.id"
+        v-for="category in filteredArr"
+        :key="category.id"
+        @click="() => navigateToPrompts(category)"
       >
         <h3 class="text-white w-[103px] mx-auto promptText">
-          {{ prompt.title }}
+          {{ category.title }}
         </h3>
       </div>
     </div>
     <button
       class="bg-white rounded-full buttonParagraph px-[15px] py-[4px] mb-[50px]"
       @click="handleClick"
-      v-if="limit < promptsArr.length - 1"
+      v-if="limit < categoriesArr.length - 1"
     >
       Show More
     </button>
@@ -22,23 +23,40 @@
 </template>
 
 <script setup>
-const promptsArr = [
-  { id: 0, title: "Create Writing Prompts" },
-  { id: 1, title: "Read Prompts" },
-  { id: 2, title: "Create Writing Prompts" },
-  { id: 3, title: "Read Prompts" },
-  { id: 4, title: "Create Writing Prompts" },
-  { id: 5, title: "Read Prompts" },
+const categoriesArr = [
+  {
+    id: 0,
+    title: "Create Writing Prompts",
+    categoryName: "creative-writing-prompts",
+  },
+  { id: 1, title: "Read Prompts", categoryName: "read-prompts" },
+  {
+    id: 2,
+    title: "Create Writing Prompts",
+    categoryName: "creative-writing-prompts",
+  },
+  { id: 3, title: "Read Prompts", categoryName: "read-prompts" },
+  {
+    id: 4,
+    title: "Create Writing Prompts",
+    categoryName: "creative-writing-prompts",
+  },
+  { id: 5, title: "Read Prompts", categoryName: "read-prompts" },
 ];
 const limit = ref(1);
 const filteredArr = computed(() => {
-  return promptsArr.filter((item) => {
+  return categoriesArr.filter((item) => {
     return item.id <= limit.value;
   });
 });
 const handleClick = () => {
   limit.value += 2;
-  console.log(limit.value);
+};
+
+const navigateToPrompts = async (element) => {
+  await navigateTo({
+    path: `/prompts/prompt/${element.categoryName}`,
+  });
 };
 </script>
 

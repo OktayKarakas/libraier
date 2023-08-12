@@ -1,7 +1,7 @@
 <template>
   <div class="mt-[50px]">
     <PromptsCategoriesSearch />
-    <PromptsCategoriesPrompts />
+    <PromptsCategoriesList />
   </div>
 </template>
 
