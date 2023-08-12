@@ -18,26 +18,21 @@
         />
       </div>
       <div class="w-[281px] flex mt-[10px] mb-[3px] gap-[10px]">
-        <div
-          class="flex gap-[11px] items-center bg-white rounded-[5px] px-[10px] pt-[4px] pb-[2px] cursor-pointer"
+        <select
+          class="custom-select text-[12px] bg-white rounded-[5px] pl-[10px] pt-[4px] pb-[2px] cursor-pointer"
         >
-          <p class="text-[12px]">Top</p>
-          <img
-            src="~/assets/categories/downArrow.svg"
-            alt="downArrow"
-            class="w-[10px] h-[10px]"
-          />
-        </div>
-        <div
-          class="flex gap-[11px] items-center bg-white rounded-[5px] px-[10px] pt-[4px] pb-[2px] cursor-pointer"
+          <option value="top">Top</option>
+          <option value="newest">Newest</option>
+          <option value="popular">Popular</option>
+        </select>
+        <select
+          class="text-[12px] bg-white rounded-[5px] pl-[10px] pt-[4px] pb-[2px] cursor-pointer"
         >
-          <p class="text-[12px]">All Time</p>
-          <img
-            src="~/assets/categories/downArrow.svg"
-            alt="downArrow"
-            class="w-[10px] h-[10px]"
-          />
-        </div>
+          <option value="all-time">All Time</option>
+          <option value="past-month">Past Month</option>
+          <option value="past-week">Past Week</option>
+          <option value="past-day">Past Day</option>
+        </select>
       </div>
     </div>
   </div>
@@ -55,5 +50,12 @@ export default {};
   background-clip: text;
 
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.no-appearance {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  background-image: none;
 }
 </style>
