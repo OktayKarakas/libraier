@@ -4,6 +4,7 @@
     <PromptsPromptPostHeader />
     <PromptsPromptPostBody />
     <PromptsPromptPostFooter />
+    <PromptsPromptSuggesteds />
   </div>
 </template>
 

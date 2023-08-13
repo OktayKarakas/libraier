@@ -1,6 +1,7 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -20,6 +21,7 @@
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
     "@prisma/client": "5.1.1",
-    "pinia": "^2.1.6"
+    "pinia": "^2.1.6",
+    "vue3-carousel-nuxt": "^1.1.0"
   }
 }
