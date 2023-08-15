@@ -1,6 +1,5 @@
 <template>
   <div>
-    <SettingsTitle />
     <SettingsSettingBlock />
     <SettingsCreatedPrompts />
     <SettingsOwnedPrompts />

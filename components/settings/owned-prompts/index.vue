@@ -8,7 +8,7 @@
       </h3>
     </div>
     <Carousel :items-to-show="2.6" :wrap-around="false">
-      <Slide v-for="slide in 10" :key="slide">
+      <Slide v-for="slides in 10" :key="slides">
         <div
           class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] block carousel__item"
         >
