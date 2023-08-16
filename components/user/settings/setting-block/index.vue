@@ -1,7 +1,7 @@
 <template>
   <div>
-    <SettingsSettingBlockHeader />
-    <SettingsSettingBlockBody />
+    <UserSettingsSettingBlockHeader />
+    <UserSettingsSettingBlockBody />
   </div>
 </template>
 
