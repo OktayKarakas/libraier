@@ -15,6 +15,7 @@
       </p>
       <button
         class="text-[14px] text-[#001C30] font-medium block w-[241px] bg-white rounded-md mt-[40px] mb-[20px] py-[5.5px] buttonShadow"
+        @click="() => navigateTo('/prompts/categories')"
       >
         <span class="mr-1 ml-1">See Prompts</span>
         <img
