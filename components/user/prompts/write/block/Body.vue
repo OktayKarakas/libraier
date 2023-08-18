@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[300px] mx-auto bg-[#111827]">
+  <div class="w-[300px] mx-auto bg-[#111827] rounded-b-[5px] mb-[100px]">
     <div>
       <form>
         <div class="flex flex-col items-center gap-[20px] pt-[40px]">
@@ -72,12 +72,38 @@
                 style="display: none"
               />
             </div>
+            <div class="flex flex-col items-center gap-[20px] pt-[40px]">
+              <label
+                for="descriptionInput"
+                class="text-white font-semibold text-[20px] leading-[20px] w-[253px]"
+                >Description</label
+              >
+              <textarea
+                id="descriptionInput"
+                name="descriptionInput"
+                class="bg-[#252525] border borderColor w-[253px] h-[419px] text-white rounded-[5px] resize-none"
+              ></textarea>
+            </div>
             <img
               v-if="sanitizedImageUrl"
               :src="sanitizedImageUrl"
               alt="Uploaded Image"
             />
           </div>
+        </div>
+        <div
+          class="flex gap-[12px] justify-end w-[253px] mx-auto mt-[19px] pb-[37px]"
+        >
+          <button
+            class="text-white bg-[#900000] w-[87px] h-[25px] text-[10px] leading[20px] font-medium rounded-[5px] borderShadow textShadow"
+          >
+            Reset
+          </button>
+          <button
+            class="text-white bg-[#0065FC] w-[87px] h-[25px] text-[10px] leading[20px] font-medium rounded-[5px] borderShadow textShadow"
+          >
+            Post
+          </button>
         </div>
       </form>
     </div>
@@ -143,4 +169,21 @@ const handleImage = (file) => {
 .borderColor {
   border: 1px solid rgba(255, 255, 255, 0.35);
 }
+.borderShadow {
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3),
+    0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+.textShadow {
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
 </style>
+
+/* Frame 71 */ /* Auto layout */ display: flex; flex-direction: row;
+justify-content: center; align-items: center; padding: 10px; gap: 10px;
+position: absolute; width: 87px; height: 25px; left: 180px; top: 1033px;
+background: #0065FC; border-radius: 5px; /* Post */ width: 77px; height: 20px;
+font-family: 'Rubik'; font-style: normal; font-weight: 500; font-size: 10px;
+line-height: 20px; /* identical to box height, or 200% */ display: flex;
+align-items: center; text-align: center; letter-spacing: 0.1px; color: #FFFFFF;
+text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); /* Inside auto layout */ flex:
+none; order: 0; flex-grow: 0;
