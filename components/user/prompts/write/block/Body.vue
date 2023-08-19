@@ -57,10 +57,22 @@
               </p>
               <label
                 for="ThumbnailImage"
-                class="w-[251px] h-[81px] bg-[#252525] border borderColor rounded-[5px]"
+                class="w-[251px] h-[81px] bg-[#252525] border borderColor rounded-[5px] cursor-pointer"
                 @dragover.prevent="onDragOver"
                 @drop.prevent="onDrop"
               >
+                <div>
+                  <div
+                    class="mx-auto w-[122px] flex flex-col items-center pt-[18px] gap-[4px]"
+                  >
+                    <img src="~/assets/user/icons/Plus.svg" />
+                    <p
+                      class="font-semibold text-[8px] leading-[20px] text-center text-[#666666]"
+                    >
+                      Drag and Drop or Select Image
+                    </p>
+                  </div>
+                </div>
               </label>
               <input
                 ref="fileInput"
@@ -72,6 +84,11 @@
                 style="display: none"
               />
             </div>
+            <img
+              v-if="sanitizedImageUrl"
+              :src="sanitizedImageUrl"
+              alt="Uploaded Image"
+            />
             <div class="flex flex-col items-center gap-[20px] pt-[40px]">
               <label
                 for="descriptionInput"
@@ -84,11 +101,6 @@
                 class="bg-[#252525] border borderColor w-[253px] h-[419px] text-white rounded-[5px] resize-none"
               ></textarea>
             </div>
-            <img
-              v-if="sanitizedImageUrl"
-              :src="sanitizedImageUrl"
-              alt="Uploaded Image"
-            />
           </div>
         </div>
         <div
@@ -177,13 +189,3 @@ const handleImage = (file) => {
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 </style>
-
-/* Frame 71 */ /* Auto layout */ display: flex; flex-direction: row;
-justify-content: center; align-items: center; padding: 10px; gap: 10px;
-position: absolute; width: 87px; height: 25px; left: 180px; top: 1033px;
-background: #0065FC; border-radius: 5px; /* Post */ width: 77px; height: 20px;
-font-family: 'Rubik'; font-style: normal; font-weight: 500; font-size: 10px;
-line-height: 20px; /* identical to box height, or 200% */ display: flex;
-align-items: center; text-align: center; letter-spacing: 0.1px; color: #FFFFFF;
-text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); /* Inside auto layout */ flex:
-none; order: 0; flex-grow: 0;
