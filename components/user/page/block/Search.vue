@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-[192px] h-[46px] bg-white gap-[7px] flex items-center rounded-[10px] mx-auto"
+    class="w-[192px] h-[46px] bg-white gap-[7px] flex items-center rounded-[10px] mx-auto mb-[30px]"
   >
     <img
       src="~/assets/categories/searchIcon.svg"
