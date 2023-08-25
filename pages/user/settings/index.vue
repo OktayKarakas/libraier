@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+definePageMeta({ middleware: "auth" });
 async function navigateUser() {
   await navigateTo({ path: "/prompts/categories" });
 }

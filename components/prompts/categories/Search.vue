@@ -14,7 +14,7 @@
         <input
           type="text"
           placeholder="Search"
-          class="text-[14px] my-auto outline-none focus:ring-0"
+          class="text-[14px] my-auto outline-none focus:ring-0 border-0"
         />
       </div>
       <div class="w-[281px] flex mt-[10px] mb-[3px] gap-[10px]">

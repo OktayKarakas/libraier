@@ -9,7 +9,7 @@
     <input
       type="text"
       placeholder="Search username's Prompts"
-      class="text-[10px] my-auto outline-none focus:ring-0 w-full pr-[5px]"
+      class="text-[10px] my-auto outline-none focus:ring-0 w-full mr-[5px] border-0"
     />
   </div>
 </template>
