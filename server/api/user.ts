@@ -1,6 +1,13 @@
 import prisma from "~/helpers/misc/prisma";
+import { getToken } from "#auth";
+// WRONG ERROR BECAUSE OF TS.
+// @ts-ignore
+import bcrypt from "bcrypt";
+import { promisify } from "util"; // Import 'promisify' from the 'util' module
 
 export default defineEventHandler(async (event) => {
+  const token = await getToken({ event });
+
   // USER DATA
   if (event.node.req.method === "GET") {
     const query = getQuery(event);
@@ -12,13 +19,26 @@ export default defineEventHandler(async (event) => {
           },
         });
         if (user) {
-          return user;
+          if (token && token.sub) {
+            const compareAsync = promisify(bcrypt.compare);
+            const result = await compareAsync(token.sub, user.password);
+            if (result) {
+              return { user };
+            } else {
+              console.error("Authentication failed.");
+              return { success: false };
+            }
+          } else {
+            console.error("Token missing.");
+            return { success: false };
+          }
         } else {
-          return null;
+          console.error("User not found.");
+          return { success: false };
         }
       } else {
-        console.log("Type Error.");
-        return null;
+        console.error("Type Error.");
+        return { success: false };
       }
     }
 
@@ -31,6 +51,7 @@ export default defineEventHandler(async (event) => {
         await prisma.$disconnect();
         process.exit(1);
       });
+
     // USER REGISTER
   } else if (event.node.req.method === "POST") {
     async function main() {

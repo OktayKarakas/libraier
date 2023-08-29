@@ -18,7 +18,7 @@ model User {
   email String @unique
   description String?
   password String?
-  profilePhoto Bytes?
+  profilePhoto String?
   writedPrompts Prompt[]
   ownedPrompts OwnedPrompt[]
   favoritedPrompts FavoritedPrompt[]

@@ -10,16 +10,28 @@
         <div class="flex items-center md:order-2 relative">
           <button
             type="button"
-            class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+            class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 z-50"
             id="user-menu-button"
             @click="handleUserMenuOpen"
           >
             <img
               class="w-8 h-8 rounded-full bg-white"
+              v-if="data?.user.image"
+              :src="data?.user.image"
+              alt="user photo"
+            />
+            <img
+              class="w-8 h-8 rounded-full bg-white"
+              v-else
               src="~/assets/user/user-template-login.svg"
               alt="user photo"
             />
           </button>
+          <div
+            class="fixed top-0 right-0 bottom-0 left-0 bg-black opacity-5 z-10"
+            :class="[{ block: isUserMenuOpen, hidden: !isUserMenuOpen }]"
+            @click="closeUserMenu"
+          ></div>
           <!-- Dropdown menu -->
           <div
             class="z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 absolute w-[150px]"
@@ -29,12 +41,12 @@
             ]"
           >
             <div class="px-4 py-3" v-if="loggedIn">
-              <span class="block text-sm text-gray-900 dark:text-white"
-                >User Name</span
-              >
+              <span class="block text-sm text-gray-900 dark:text-white">{{
+                data?.user.name && data.user.name
+              }}</span>
               <span
                 class="block text-sm text-gray-500 truncate dark:text-gray-400"
-                >User Email</span
+                >{{ data?.user.email && data.user.name }}</span
               >
             </div>
             <ul class="py-2" aria-labelledby="user-menu-button">
@@ -94,19 +106,15 @@
             </ul>
           </div>
           <button
-            data-collapse-toggle="navbar-user"
             type="button"
-            class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden"
+            class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden z-40"
             :class="
               isMenuOpen
                 ? 'bg-white'
                 : 'bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600 focus:outline-none dark:text-gray-400'
             "
-            aria-controls="navbar-user"
-            aria-expanded="false"
-            @click="handleMenuOpen"
+            @click="handleNavbarMenu"
           >
-            <span class="sr-only">Open main menu</span>
             <svg
               class="w-5 h-5"
               aria-hidden="true"
@@ -124,8 +132,16 @@
             </svg>
           </button>
         </div>
+        <!-- navbar -->
         <div
-          class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+          class="fixed top-0 right-0 bottom-0 left-0 bg-black opacity-5 z-10"
+          :class="[{ block: isMenuOpen, hidden: !isMenuOpen }]"
+          @click="closeNavbar"
+        ></div>
+        <div
+          class="items-center justify-between w-full md:flex md:w-auto md:order-1 z-50"
+          :class="[{ hidden: !isMenuOpen, block: isMenuOpen }]"
+          @click="handleNavbarMenu"
           id="navbar-user"
         >
           <ul
@@ -172,9 +188,8 @@
 </template>
 
 <script setup>
-import { useHeaderOpen } from "~/stores/ui/header.ts";
 const route = useRoute();
-const { status, signIn, signOut } = useAuth();
+const { status, data, signIn, signOut } = useAuth();
 const loggedIn = computed(() => status.value === "authenticated");
 const currentRoute = computed(() => route.fullPath);
 const isMenuOpen = ref(false);
@@ -184,19 +199,36 @@ async function handleSignIn() {
   await signIn("google");
 }
 
+function closeUserMenu() {
+  isUserMenuOpen.value = false;
+}
+
+function closeNavbar() {
+  isMenuOpen.value = false;
+}
+
 function handleUserMenuOpen() {
-  isUserMenuOpen.value = !isUserMenuOpen.value;
+  if (!isMenuOpen.value) {
+    isUserMenuOpen.value = !isUserMenuOpen.value;
+  }
+}
+
+function userImage() {
+  return require("~/assets/about/first-image.jpg");
 }
 
 function handleMenuOpen() {
   isMenuOpen.value = !isMenuOpen.value;
 }
 
+function handleNavbarMenu() {
+  closeUserMenu();
+  handleMenuOpen();
+}
+
 async function handleSignOut() {
   await signOut();
 }
-const store = useHeaderOpen();
-const isHeaderOpen = computed(() => store.isHeaderOpen);
 </script>
 
 <style></style>
