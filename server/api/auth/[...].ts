@@ -19,29 +19,34 @@ export default NuxtAuthHandler({
           saltRounds,
           async function (err: any, hash: any) {
             if (token.email) {
-              const existUser = await prisma.user.findUnique({
-                where: {
-                  email: token.email,
-                },
-              });
+              try {
+                const existUser = await prisma.user.findUnique({
+                  where: {
+                    email: token.email,
+                  },
+                });
 
-              if (!existUser) {
-                if (token.name) {
-                  await prisma.user.create({
-                    data: {
-                      fullName: token.name,
-                      username: token.name,
-                      email: token.email,
-                      password: hash,
-                      profilePhoto: `${token.picture}`,
-                    },
-                  });
+                if (!existUser) {
+                  if (token.name) {
+                    await prisma.user.create({
+                      data: {
+                        fullName: token.name,
+                        username: token.name,
+                        email: token.email,
+                        password: hash,
+                        profilePhoto: `${token.picture}`,
+                      },
+                    });
+                  }
                 }
+              } catch (error) {
+                // Fix here, catch the error
+                console.error("Error:", error);
               }
             }
 
             if (err) {
-              console.error("error hashing.");
+              console.error("Error hashing.");
             }
           }
         );
