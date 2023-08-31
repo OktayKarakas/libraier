@@ -12,10 +12,10 @@ export default defineEventHandler(async (event) => {
   if (event.node.req.method === "GET") {
     const query = getQuery(event);
     async function main() {
-      if (typeof query.id === "string") {
+      if (typeof query.email === "string") {
         const user = await prisma.user.findUnique({
           where: {
-            id: query.id,
+            email: query.email,
           },
         });
         if (user) {

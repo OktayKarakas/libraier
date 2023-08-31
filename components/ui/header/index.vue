@@ -17,7 +17,7 @@
             <img
               class="w-8 h-8 rounded-full bg-white"
               v-if="data?.user.image"
-              :src="data.user.image"
+              :src="data?.user.image"
               alt="user photo"
             />
             <img
@@ -46,7 +46,7 @@
               }}</span>
               <span
                 class="block text-sm text-gray-500 truncate dark:text-gray-400"
-                >{{ data?.user.email && data.user.name }}</span
+                >{{ data?.user.email && data.user.email }}</span
               >
             </div>
             <ul class="py-2" aria-labelledby="user-menu-button">
@@ -197,6 +197,7 @@ const isUserMenuOpen = ref(false);
 
 async function handleSignIn() {
   await signIn("google");
+  navigateTo("/");
 }
 
 function closeUserMenu() {
@@ -211,10 +212,6 @@ function handleUserMenuOpen() {
   if (!isMenuOpen.value) {
     isUserMenuOpen.value = !isUserMenuOpen.value;
   }
-}
-
-function userImage() {
-  return require("~/assets/about/first-image.jpg");
 }
 
 function handleMenuOpen() {

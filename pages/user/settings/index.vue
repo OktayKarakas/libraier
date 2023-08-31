@@ -15,7 +15,16 @@
 </template>
 
 <script setup>
-definePageMeta({ middleware: "auth" });
+definePageMeta({
+  middleware: [
+    function (to, from) {
+      const { status } = useAuth();
+      if (status.value !== "authenticated") {
+        return navigateTo("/");
+      }
+    },
+  ],
+});
 async function navigateUser() {
   await navigateTo({ path: "/prompts/categories" });
 }
