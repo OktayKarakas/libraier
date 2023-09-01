@@ -2,6 +2,7 @@
   <div>
     <UserSettingsSettingBlockHeader />
     <UserSettingsSettingBlockBody />
+    <UserSettingsSettingBlockModal />
   </div>
 </template>
 

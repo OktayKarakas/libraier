@@ -24,7 +24,13 @@
           </p>
         </button>
         <!-- Use the label and input for image upload -->
-        <label
+        <button
+          class="bg-[#00CC99] py-[5px] px-[5px] rounded-[5px] min-w-[117px] cursor-pointer text-white text-[10px] font-semibold text-center"
+        >
+          Change Profile Photo
+        </button>
+        <!-- modal inner photo upload button -->
+        <!-- <label
           for="profile-photo-upload"
           class="bg-[#00CC99] py-[5px] px-[5px] rounded-[5px] min-w-[117px] cursor-pointer"
         >
@@ -39,7 +45,7 @@
           <p class="text-white text-[10px] font-semibold text-center">
             Change Profile Photo
           </p>
-        </label>
+        </label> -->
       </div>
     </div>
   </div>
