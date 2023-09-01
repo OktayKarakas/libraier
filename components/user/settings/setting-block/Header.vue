@@ -51,6 +51,8 @@ const { data } = useAuth();
 import { uuid } from "vue-uuid";
 // Define a ref to store the Data URL
 const dataUrl = ref(null);
+const config = useRuntimeConfig();
+const imgApiKey = config.public.imgAPI;
 
 // Function to handle image upload
 const handleImageUpload = (event) => {
@@ -65,19 +67,19 @@ const handleImageUpload = (event) => {
         formData.append("image", selectedImageFile); // Use the selected file directly
 
         try {
-          const response = await fetch(
-            `https://api.imgbb.com/1/upload?key=176b5855d1a934c72683ae0bcec0e421&name=${uuid.v1()}`,
+          const { data, error } = await useFetch(
+            `https://api.imgbb.com/1/upload?key=${imgApiKey}&name=${uuid.v1()}`,
             {
               method: "POST",
               body: formData,
             }
           );
-
-          if (response.ok) {
-            const responseData = await response.json();
-            dataUrl.value = responseData.data.url;
+          if (!error.value) {
+            console.log(data.value);
+            dataUrl.value = data.value.data.display_url;
+            console.log(dataUrl.value);
           } else {
-            console.error("Img Upload Error");
+            console.log(error.value);
           }
         } catch (error) {
           console.error("Error:", error);
