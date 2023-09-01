@@ -68,7 +68,7 @@ const handleImageUpload = (event) => {
 
         try {
           const response = await fetch(
-            `https://api.imgbb.com/1/upload?key=${imgApiKey}&name=${uuid.v1()}`,
+            `https://api.imgbb.com/1/upload?key=176b5855d1a934c72683ae0bcec0e421&name=${uuid.v1()}`,
             {
               method: "POST",
               body: formData,
