@@ -51,7 +51,6 @@ const { data } = useAuth();
 import { uuid } from "vue-uuid";
 // Define a ref to store the Data URL
 const dataUrl = ref(null);
-const config = useRuntimeConfig();
 
 // Function to handle image upload
 const handleImageUpload = (event) => {
