@@ -2,6 +2,11 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ["@pinia/nuxt", "vue3-carousel-nuxt", "@sidebase/nuxt-auth"],
+  runtimeConfig: {
+    public: {
+      imgAPI: process.env.IMG_API_KEY,
+    },
+  },
   app: {
     head: {
       title: "Libraier",
