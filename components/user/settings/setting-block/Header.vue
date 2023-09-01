@@ -75,14 +75,12 @@ const handleImageUpload = (event) => {
             }
           );
           if (!error.value) {
-            console.log(data.value);
             dataUrl.value = data.value.data.display_url;
-            console.log(dataUrl.value);
           } else {
-            console.log(error.value);
+            console.error("image error");
           }
         } catch (error) {
-          console.error("Error:", error);
+          console.error("Error Promise Image");
         }
       };
       sendToImdbb();
