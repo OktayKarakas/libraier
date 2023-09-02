@@ -1,6 +1,9 @@
 <template>
-  <div class="h-[250px] fixed top-[33%] left-0 right-0 bottom-0 z-50">
-    <div class="relative w-full max-w-2xl max-h-full">
+  <div
+    class="h-[250px] fixed top-[33%] left-0 right-0 bottom-0 z-50"
+    :class="[isOpen ? 'block' : 'hidden']"
+  >
+    <div class="relative w-full max-w-2xl max-h-full mx-auto">
       <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
         <!-- Modal header -->
         <div
@@ -12,6 +15,7 @@
           <button
             type="button"
             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            @click="() => closeModal()"
             data-modal-hide="defaultModal"
           >
             <svg
@@ -71,17 +75,26 @@
         <div
           class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600"
         >
-          <button
-            data-modal-hide="defaultModal"
-            type="button"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          <label
+            for="profile-photo-upload"
+            class="focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white"
+            :class="[loading ? 'bg-green-500' : 'bg-blue-800']"
           >
-            I accept
-          </button>
+            <input
+              type="file"
+              id="profile-photo-upload"
+              accept="image/*"
+              style="display: none"
+              ref="fileInput"
+              @change="handleImageUpload"
+            />
+            <p>{{ loading ? "Loading" : "Accept" }}</p>
+          </label>
           <button
             data-modal-hide="defaultModal"
             type="button"
             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+            @click="() => props.closeModal()"
           >
             Decline
           </button>
@@ -91,6 +104,54 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { uuid } from "vue-uuid";
+// Define a ref to store the Data URL
+const dataUrl = ref(null);
+const config = useRuntimeConfig();
+const imgApiKey = config.public.imgAPI;
+const props = defineProps(["isOpen", "closeModal"]);
+const loading = ref(false);
+
+const handleImageUpload = (event) => {
+  const selectedImageFile = event.target.files[0];
+
+  if (selectedImageFile) {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const sendToImdbb = async () => {
+        const formData = new FormData();
+        formData.append("image", selectedImageFile); // Use the selected file directly
+        loading.value = true;
+        try {
+          const { data, error, pending } = await useFetch(
+            `https://api.imgbb.com/1/upload?key=${imgApiKey}&name=${uuid.v1()}`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+          if (!error.value) {
+            if (data.value) {
+              dataUrl.value = data.value.data.display_url;
+              loading.value = false;
+              props.closeModal();
+            }
+          } else {
+            loading.value = false;
+            console.error("image error");
+          }
+        } catch (error) {
+          console.error("Error Promise Image");
+        }
+      };
+      sendToImdbb();
+    };
+
+    reader.readAsDataURL(selectedImageFile);
+  }
+};
+</script>
 
 <style scoped></style>

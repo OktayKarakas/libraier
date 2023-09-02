@@ -1,11 +1,27 @@
 <template>
   <div>
-    <UserSettingsSettingBlockHeader />
+    <UserSettingsSettingBlockHeader
+      :openModal="openModal"
+      :closeModal="closeModal"
+    />
     <UserSettingsSettingBlockBody />
-    <UserSettingsSettingBlockModal />
+    <UserSettingsSettingBlockModal
+      :isOpen="isModalOpen"
+      :closeModal="closeModal"
+    />
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const isModalOpen = ref(false);
+
+function openModal() {
+  isModalOpen.value = true;
+}
+
+function closeModal() {
+  isModalOpen.value = false;
+}
+</script>
 
 <style scoped></style>
