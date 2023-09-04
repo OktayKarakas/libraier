@@ -6,8 +6,8 @@
       <div class="flex flex-col gap-[20px] items-center">
         <!-- Display the user's profile image if available, else use a default image -->
         <img
-          v-if="data?.user.image"
-          :src="data?.user.image"
+          v-if="userData?.profilePhoto"
+          :src="userData?.profilePhoto"
           class="w-[37px] h-[37px] rounded-full object-cover"
         />
         <img
@@ -36,8 +36,29 @@
 </template>
 
 <script setup>
-const { data } = useAuth();
+const { data, status } = useAuth();
 const props = defineProps(["openModal", "closeModal"]);
+const userData = ref({});
+async function fetchUserData() {
+  if (status.value === "authenticated") {
+    const {
+      data: userData,
+      pending,
+      error,
+    } = await useFetch("/api/user", {
+      query: { email: data.value.user.email },
+    });
+    return userData.value.user.user;
+  }
+  if (error.value) {
+    return;
+  }
+  return;
+}
+
+if (status.value === "authenticated") {
+  userData.value = await fetchUserData();
+}
 </script>
 
 <style scoped></style>

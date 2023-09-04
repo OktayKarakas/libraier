@@ -106,8 +106,10 @@
 
 <script setup>
 import { uuid } from "vue-uuid";
+const { status, data } = useAuth();
 // Define a ref to store the Data URL
 const dataUrl = ref(null);
+
 const config = useRuntimeConfig();
 const imgApiKey = config.public.imgAPI;
 const props = defineProps(["isOpen", "closeModal"]);
@@ -136,6 +138,7 @@ const handleImageUpload = (event) => {
             if (data.value) {
               dataUrl.value = data.value.data.display_url;
               loading.value = false;
+              await sendPatchReq(dataUrl.value);
               props.closeModal();
             }
           } else {
@@ -150,6 +153,22 @@ const handleImageUpload = (event) => {
     };
 
     reader.readAsDataURL(selectedImageFile);
+  }
+  async function sendPatchReq(url) {
+    if (status.value === "authenticated") {
+      const email = data.value.user.email;
+      const { error } = await useFetch("/api/user/settings", {
+        method: "PATCH",
+        query: { email: email },
+        body: {
+          profilePhoto: url,
+        },
+      });
+      if (error.value) {
+        return;
+      }
+      return;
+    }
   }
 };
 </script>

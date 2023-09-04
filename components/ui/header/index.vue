@@ -16,8 +16,8 @@
           >
             <img
               class="w-8 h-8 rounded-full bg-white"
-              v-if="data?.user.image"
-              :src="data?.user.image"
+              v-if="userData?.profilePhoto"
+              :src="userData?.profilePhoto"
               alt="user photo"
             />
             <img
@@ -42,11 +42,11 @@
           >
             <div class="px-4 py-3" v-if="loggedIn">
               <span class="block text-sm text-gray-900 dark:text-white">{{
-                data?.user.name && data.user.name
+                userData?.fullName && userData.fullName
               }}</span>
               <span
                 class="block text-sm text-gray-500 truncate dark:text-gray-400"
-                >{{ data?.user.email && data.user.email }}</span
+                >{{ userData?.username && userData.username }}</span
               >
             </div>
             <ul class="py-2" aria-labelledby="user-menu-button">
@@ -194,6 +194,28 @@ const loggedIn = computed(() => status.value === "authenticated");
 const currentRoute = computed(() => route.fullPath);
 const isMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
+const userData = ref({});
+
+async function fetchUserData() {
+  if (status.value === "authenticated") {
+    const {
+      data: userData,
+      pending,
+      error,
+    } = await useFetch("/api/user", {
+      query: { email: data.value.user.email },
+    });
+    return userData.value.user.user;
+  }
+  if (error.value) {
+    return;
+  }
+  return;
+}
+
+if (status.value === "authenticated") {
+  userData.value = await fetchUserData();
+}
 
 async function handleSignIn() {
   await signIn("google");
