@@ -11,74 +11,107 @@ export default defineEventHandler(async (event) => {
     async function main() {
       const query = getQuery(event);
       const body = await readBody(event);
-
-      if (typeof query.email === "string") {
-        const user = await prisma.user.findUnique({
-          where: {
-            email: query.email,
-          },
-        });
-        if (user) {
-          if (token && token.sub) {
-            const compareAsync = promisify(bcrypt.compare);
-            const result = await compareAsync(token.sub, user.password);
-            if (result) {
-              if (body.username) {
-                const sameUserNameExist = await prisma.user.findUnique({
+      if (!query.removePhoto) {
+        if (typeof query.email === "string") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: query.email,
+            },
+          });
+          if (user) {
+            if (token && token.sub) {
+              const compareAsync = promisify(bcrypt.compare);
+              const result = await compareAsync(token.sub, user.password);
+              if (result) {
+                if (body.username) {
+                  const sameUserNameExist = await prisma.user.findUnique({
+                    where: {
+                      username: body.username,
+                    },
+                  });
+                  console.log("test");
+                  if (sameUserNameExist) {
+                    await prisma.user.update({
+                      where: {
+                        email: query.email,
+                      },
+                      data: {
+                        ...body,
+                        username: user.username,
+                      },
+                    });
+                    console.log("same user");
+                    return { error: "same_username_exist" };
+                  } else {
+                    await prisma.user.update({
+                      where: {
+                        email: query.email,
+                      },
+                      data: {
+                        ...body,
+                      },
+                    });
+                    return {};
+                  }
+                }
+                await prisma.user.update({
                   where: {
-                    username: body.username,
+                    email: query.email,
+                  },
+                  data: {
+                    ...body,
                   },
                 });
-
-                if (sameUserNameExist) {
-                  console.log("same user");
-                  await prisma.user.update({
-                    where: {
-                      email: query.email,
-                    },
-                    data: {
-                      ...body,
-                      username: user.username,
-                    },
-                  });
-                  console.log("same user");
-                  return { error: "same_username_exist" };
-                } else {
-                  await prisma.user.update({
-                    where: {
-                      email: query.email,
-                    },
-                    data: {
-                      ...body,
-                    },
-                  });
-                  return {};
-                }
+                return {};
+              } else {
+                console.error("Authentication failed.");
+                return { success: false };
               }
-              await prisma.user.update({
-                where: {
-                  email: query.email,
-                },
-                data: {
-                  ...body,
-                },
-              });
-              return {};
             } else {
-              console.error("Authentication failed.");
+              console.error("Token missing.");
               return { success: false };
             }
           } else {
-            console.error("Token missing.");
+            console.error("User not found.");
             return { success: false };
           }
         } else {
-          console.error("User not found.");
+          console.error("Type Error.");
           return { success: false };
         }
       } else {
-        console.error("Type Error.");
-        return { success: false };
+        if (typeof query.email === "string") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: query.email,
+            },
+          });
+
+          if (user) {
+            if (token && token.sub) {
+              const compareAsync = promisify(bcrypt.compare);
+              const result = await compareAsync(token.sub, user.password);
+              if (result) {
+                await prisma.user.update({
+                  where: {
+                    email: query.email,
+                  },
+                  data: {
+                    profilePhoto: null,
+                  },
+                });
+              }
+            }
+          } else {
+            console.error("user not exist.");
+            Promise.reject("error.");
+            return { error: true };
+          }
+        } else {
+          console.error("Type Error");
+          Promise.reject("error.");
+          return { error: true };
+        }
       }
     }
 

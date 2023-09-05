@@ -79,18 +79,12 @@ const getUserData = async () => {
 };
 const userData = await getUserData();
 async function handleSubmit() {
-  if (formUserName.value === userData?.data?.value.user.user.username) {
-    sendData.value = {
-      fullName: formFullName.value,
-      description: formDescription.value,
-    };
-  } else {
-    sendData.value = {
-      fullName: formFullName.value,
-      username: formUserName.value,
-      description: formDescription.value,
-    };
-  }
+  formPending.value = true;
+  sendData.value = {
+    fullName: formFullName.value,
+    username: formUserName.value,
+    description: formDescription.value,
+  };
 
   const { data, pending, error, refresh } = await useFetch(
     `/api/user/settings?email=${email}`,
@@ -101,8 +95,11 @@ async function handleSubmit() {
   );
   if (data.value.result?.error) {
     sameUserNameExist.value = true;
+    formPending.value = false;
   } else {
     sameUserNameExist.value = false;
+    formPending.value = false;
+    window.location.reload();
   }
   watch(pending, async (newPending, oldPending) => {
     formPending.value = newPending;

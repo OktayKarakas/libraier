@@ -56,6 +56,18 @@ async function fetchUserData() {
   return;
 }
 
+const handleRemoveButton = async () => {
+  const { error } = await useFetch("/api/user/settings", {
+    query: { email: data.value.user.email, removePhoto: true },
+    method: "PATCH",
+  });
+  if (error.value) {
+    return;
+  } else {
+    window.location.reload();
+  }
+};
+
 if (status.value === "authenticated") {
   userData.value = await fetchUserData();
 }

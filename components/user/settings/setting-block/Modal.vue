@@ -140,6 +140,7 @@ const handleImageUpload = (event) => {
               loading.value = false;
               await sendPatchReq(dataUrl.value);
               props.closeModal();
+              window.location.reload();
             }
           } else {
             loading.value = false;
