@@ -27,6 +27,7 @@
                 name="category"
                 class="bg-[#252525] border borderColor w-[226px] h-[28px] text-white rounded-[5px] rounded-tr-[0px] rounded-br-[0px]"
                 @input="changeCategoryName"
+                :value="categoryName"
               />
               <div
                 class="w-[27px] h-[28px] border borderColor flex items-center justify-center rounded-tr-[5px] rounded-br-[5px] bg-[#252525]"
@@ -38,14 +39,19 @@
               <div
                 class="pl-[20px] py-[10px] border-b border-black"
                 @click="createCategory"
+                v-if="!categoryExist"
               >
                 <p class="text-white text-[8px] font-semibold">
                   Create "{{ categoryName }}" Category
                 </p>
               </div>
-              <div class="pl-[20px] py-[10px] border-b border-black">
+              <div
+                class="pl-[20px] py-[10px] border-b border-black"
+                v-for="category in categories"
+                :key="category.id"
+              >
                 <p class="text-white text-[8px] font-semibold">
-                  Smart Brain Solves
+                  {{ category.name }}
                 </p>
               </div>
             </div>
@@ -124,20 +130,63 @@
 
 <script setup>
 import DOMPurify from "dompurify";
+import { watchDebounced } from "@vueuse/core";
+const { status, data } = useAuth();
 
-const categoryName = ref(false);
+const categoryName = ref("");
+const categoryExistPost = ref(false);
+const categoryExist = ref(false);
+const categories = ref([]);
+
+watchDebounced(
+  categoryName,
+  () => {
+    fetchCategories();
+  },
+  { debounce: 500, maxWait: 850 }
+);
+
+async function fetchCategories() {
+  const { data: dbData, error } = await useFetch("/api/user/prompts", {
+    method: "GET",
+    query: { categoryTitle: categoryName.value, getCategory: true },
+  });
+  if (error.value) {
+    return;
+  }
+  categories.value = dbData?.value?.result?.categories;
+}
 
 const changeCategoryName = (event) => {
   const element = event.target.value.trim();
   if (element !== "") {
     categoryName.value = element;
   } else {
-    categoryName.value = false;
+    categoryName.value = "";
   }
 };
 
-const createCategory = () => {
-  console.log(categoryName.value);
+const createCategory = async () => {
+  if (status.value === "authenticated") {
+    const { data: dbData, error } = await useFetch("/api/user/prompts", {
+      method: "POST",
+      query: { email: data.value.user.email, category_create: true },
+      body: {
+        name: categoryName.value,
+      },
+    });
+    if (error.value) {
+      categoryName.value = "";
+      return;
+    }
+    if (dbData?.value?.result?.json?.error === "category_exist") {
+      categoryExistPost.value = true;
+      categoryName.value = "";
+      return;
+    }
+    categoryName.value = "";
+  }
+  categoryExist.value = false;
 };
 
 const imageUrl = ref("");

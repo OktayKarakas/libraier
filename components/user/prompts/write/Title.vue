@@ -4,7 +4,7 @@
       <h1
         class="w-[210px] text-[32px] font-bold text-center leading-[38px] heading"
       >
-        Story Maker Prompt
+        Write Prompt
       </h1>
     </div>
   </div>
