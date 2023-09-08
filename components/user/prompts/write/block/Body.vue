@@ -1,7 +1,7 @@
 <template>
   <div class="w-[300px] mx-auto bg-[#111827] rounded-b-[5px] mb-[100px]">
     <div>
-      <form>
+      <div>
         <div class="flex flex-col items-center gap-[20px] pt-[40px]">
           <label
             for="titleInput"
@@ -23,7 +23,7 @@
           <div>
             <div class="flex">
               <input
-                id="titleInput"
+                id="category"
                 name="category"
                 class="bg-[#252525] border borderColor w-[226px] h-[28px] text-white rounded-[5px] rounded-tr-[0px] rounded-br-[0px]"
                 @input="changeCategoryName"
@@ -37,16 +37,16 @@
             </div>
             <div class="w-[251px] mx-auto bg-[#252525]" v-if="categoryName">
               <div
-                class="pl-[20px] py-[10px] border-b border-black"
-                @click="createCategory"
+                class="pl-[20px] py-[10px] border-b border-black cursor-pointer"
                 v-if="!categoryExist"
+                @click="createCategory"
               >
                 <p class="text-white text-[8px] font-semibold">
                   Create "{{ categoryName }}" Category
                 </p>
               </div>
               <div
-                class="pl-[20px] py-[10px] border-b border-black"
+                class="pl-[20px] py-[15px] border-b border-black"
                 v-for="category in categories"
                 :key="category.id"
               >
@@ -119,11 +119,12 @@
           </button>
           <button
             class="text-white bg-[#0065FC] w-[87px] h-[25px] text-[10px] leading[20px] font-medium rounded-[5px] borderShadow textShadow"
+            @click="sendForm"
           >
             Post
           </button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
@@ -137,11 +138,34 @@ const categoryName = ref("");
 const categoryExistPost = ref(false);
 const categoryExist = ref(false);
 const categories = ref([]);
+const Title = ref("");
+const description = ref("");
+const tags = ref(["ChatGPT"]);
+
+async function sendForm() {
+  const sendData = {
+    title: Title.value,
+    description: description.value,
+    price: 0,
+  };
+  await useFetch("/api/user/prompts", {
+    method: "POST",
+    body: sendData,
+    query: { email: data.value.user.email, postPrompt: true },
+  });
+}
 
 watchDebounced(
   categoryName,
   () => {
     fetchCategories();
+    categories.value.map((item) => {
+      if (item.name.toLowerCase() === categoryName.value.toLowerCase()) {
+        categoryExist.value = true;
+      } else {
+        categoryExist.value = false;
+      }
+    });
   },
   { debounce: 500, maxWait: 850 }
 );

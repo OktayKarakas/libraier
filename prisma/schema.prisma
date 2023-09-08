@@ -29,6 +29,7 @@ model Prompt {
   id String @id @default(uuid())
   writerId String
   updatedAt DateTime @updatedAt
+  title String
   favNum Int @default(0)
   commentNum Int @default(0)
   viewNum Int @default(0)
@@ -74,7 +75,7 @@ model Comment {
 
 model Tag {
   id String @id @default(uuid())
-  title String
+  titles String[]
   promptId String
   prompt Prompt @relation(fields: [promptId], references: [id])
 }

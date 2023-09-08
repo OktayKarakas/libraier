@@ -4,6 +4,7 @@ import prisma from "~/helpers/misc/prisma";
 // @ts-ignore
 import bcrypt from "bcrypt";
 import { promisify } from "util";
+import user from "..";
 
 export default defineEventHandler(async (event) => {
   const token = await getToken({ event });
@@ -65,6 +66,31 @@ export default defineEventHandler(async (event) => {
             }
           }
         }
+      } else if (query.postPrompt) {
+        if (typeof query.email === "string") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: query.email,
+            },
+          });
+          if (user) {
+            if (token && token.sub) {
+              const compareAsync = promisify(bcrypt.compare);
+              const result = await compareAsync(token.sub, user.password);
+              if (result) {
+                const prompt = await prisma.prompt.create({
+                  data: {
+                    writerId: user.id,
+                    categoryId: "0c086969-d6f8-4859-91c0-f2185a7226c4",
+                    categoryName: "test",
+                    ...body,
+                  },
+                });
+                console.log(prompt);
+              }
+            }
+          }
+        }
       }
     }
 
@@ -85,7 +111,7 @@ export default defineEventHandler(async (event) => {
           const categories = await prisma.category.findMany({
             where: {
               name: {
-                startsWith: query.categoryTitle,
+                startsWith: query.categoryTitle.toLowerCase(),
               },
             },
           });

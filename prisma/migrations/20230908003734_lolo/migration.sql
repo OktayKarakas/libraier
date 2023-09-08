@@ -6,7 +6,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "description" TEXT,
     "password" TEXT,
-    "profilePhoto" BYTEA,
+    "profilePhoto" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
