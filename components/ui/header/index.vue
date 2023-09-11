@@ -97,7 +97,7 @@
                 <button
                   v-if="status === 'unauthenticated'"
                   @click="handleSignIn"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full"
                 >
                   Sign in
                 </button>
@@ -106,7 +106,7 @@
                 <button
                   v-if="status === 'authenticated'"
                   @click="handleSignOut"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full"
                 >
                   Sign out
                 </button>
@@ -268,6 +268,7 @@ function handleNavbarMenu() {
 }
 
 async function handleSignOut() {
+  await navigateTo("/");
   await signOut();
 }
 </script>
