@@ -22,6 +22,12 @@
             />
             <img
               class="w-8 h-8 rounded-full bg-white"
+              v-else-if="data?.user.image"
+              :src="data?.user.image"
+              alt="user photo"
+            />
+            <img
+              class="w-8 h-8 rounded-full bg-white"
               v-else
               src="~/assets/user/user-template-login.svg"
               alt="user photo"
@@ -42,11 +48,13 @@
           >
             <div class="px-4 py-3" v-if="loggedIn">
               <span class="block text-sm text-gray-900 dark:text-white">{{
-                userData?.fullName && userData.fullName
+                userData?.fullName ? userData.fullName : data?.user.name
               }}</span>
               <span
                 class="block text-sm text-gray-500 truncate dark:text-gray-400"
-                >{{ userData?.username && userData.username }}</span
+                >{{
+                  userData?.username ? userData.username : data?.user.email
+                }}</span
               >
             </div>
             <ul class="py-2" aria-labelledby="user-menu-button">
@@ -195,6 +203,20 @@ const currentRoute = computed(() => route.fullPath);
 const isMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 const userData = ref({});
+
+watch(currentRoute, async (newVal, oldVal) => {
+  const expirationDate = new Date(data.value.expires);
+  const currentDate = new Date();
+  if (newVal === "/") {
+    if (expirationDate <= currentDate) {
+      signOut();
+    }
+  } else {
+    if (expirationDate <= currentDate) {
+      navigateTo("/");
+    }
+  }
+});
 
 async function fetchUserData() {
   if (status.value === "authenticated") {
