@@ -205,15 +205,33 @@ const isUserMenuOpen = ref(false);
 const userData = ref({});
 
 watch(currentRoute, async (newVal, oldVal) => {
-  const expirationDate = new Date(data.value.expires);
-  const currentDate = new Date();
-  if (newVal === "/") {
-    if (expirationDate <= currentDate) {
-      signOut();
+  if (data?.value?.expires) {
+    const expirationDate = new Date(data.value.expires);
+    const currentDate = new Date();
+    if (newVal === "/") {
+      if (expirationDate <= currentDate) {
+        signOut();
+      }
+    } else {
+      if (expirationDate <= currentDate) {
+        navigateTo("/");
+      }
     }
-  } else {
-    if (expirationDate <= currentDate) {
-      navigateTo("/");
+  }
+});
+
+onMounted(() => {
+  if (data?.value?.expires) {
+    const expirationDate = new Date(data.value.expires);
+    const currentDate = new Date();
+    if (currentRoute.value === "/") {
+      if (expirationDate <= currentDate) {
+        signOut();
+      }
+    } else {
+      if (currentRoute.value <= currentDate) {
+        navigateTo("/");
+      }
     }
   }
 });
