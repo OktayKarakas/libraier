@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
               const compareAsync = promisify(bcrypt.compare);
               const result = await compareAsync(token.sub, user.password);
               if (result) {
-                const prompt = await prisma.prompt.create({
+                return await prisma.prompt.create({
                   data: {
                     writerId: user.id,
                     categoryId: "0c086969-d6f8-4859-91c0-f2185a7226c4",
@@ -86,7 +86,6 @@ export default defineEventHandler(async (event) => {
                     ...body,
                   },
                 });
-                console.log(prompt);
               }
             }
           }

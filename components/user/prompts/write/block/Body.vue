@@ -1,7 +1,7 @@
 <template>
   <div class="w-[300px] mx-auto bg-[#111827] rounded-b-[5px] mb-[100px]">
     <div>
-      <div>
+      <form @submit.prevent="sendForm">
         <div class="flex flex-col items-center gap-[20px] pt-[40px]">
           <label
             for="titleInput"
@@ -10,7 +10,9 @@
           >
           <input
             id="titleInput"
+            required
             name="titleInput"
+            v-model="Title"
             class="bg-[#252525] border borderColor w-[253px] h-[28px] text-white rounded-[5px]"
           />
         </div>
@@ -27,6 +29,7 @@
                 name="category"
                 class="bg-[#252525] border borderColor w-[226px] h-[28px] text-white rounded-[5px] rounded-tr-[0px] rounded-br-[0px]"
                 @input="changeCategoryName"
+                required
                 :value="categoryName"
               />
               <div
@@ -35,7 +38,10 @@
                 <img src="~/assets/user/icons/ChevronDown.svg" />
               </div>
             </div>
-            <div class="w-[251px] mx-auto bg-[#252525]" v-if="categoryName">
+            <div
+              class="w-[251px] mx-auto bg-[#252525]"
+              v-if="categoryName && !categoryPicked"
+            >
               <div
                 class="pl-[20px] py-[10px] border-b border-black cursor-pointer"
                 v-if="!categoryExist"
@@ -49,6 +55,7 @@
                 class="pl-[20px] py-[15px] border-b border-black"
                 v-for="category in categories"
                 :key="category.id"
+                @click="handleCategoryClick(category.name)"
               >
                 <p class="text-white text-[8px] font-semibold">
                   {{ category.name }}
@@ -104,6 +111,8 @@
               <textarea
                 id="descriptionInput"
                 name="descriptionInput"
+                v-model="description"
+                required
                 class="bg-[#252525] border borderColor w-[253px] h-[419px] text-white rounded-[5px] resize-none"
               ></textarea>
             </div>
@@ -114,17 +123,19 @@
         >
           <button
             class="text-white bg-[#900000] w-[87px] h-[25px] text-[10px] leading[20px] font-medium rounded-[5px] borderShadow textShadow"
+            type="button"
+            @click="handleReset"
           >
             Reset
           </button>
           <button
             class="text-white bg-[#0065FC] w-[87px] h-[25px] text-[10px] leading[20px] font-medium rounded-[5px] borderShadow textShadow"
-            @click="sendForm"
+            type="submit"
           >
             Post
           </button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
@@ -140,32 +151,54 @@ const categoryExist = ref(false);
 const categories = ref([]);
 const Title = ref("");
 const description = ref("");
-const tags = ref(["ChatGPT"]);
+const formError = ref(true);
+const categoryPicked = ref(false);
 
 async function sendForm() {
-  const sendData = {
-    title: Title.value,
-    description: description.value,
-    price: 0,
-  };
-  await useFetch("/api/user/prompts", {
-    method: "POST",
-    body: sendData,
-    query: { email: data.value.user.email, postPrompt: true },
-  });
+  if (!description.value || !Title.value) {
+    formError.value = true;
+  } else {
+    formError.value = false;
+  }
+  if (!formError.value) {
+    const sendData = {
+      title: Title.value,
+      description: description.value,
+      price: 0,
+    };
+    await useFetch("/api/user/prompts", {
+      method: "POST",
+      body: sendData,
+      query: { email: data.value.user.email, postPrompt: true },
+    });
+    console.log("test");
+  }
 }
+
+const handleCategoryClick = (categoryParName) => {
+  categoryPicked.value = true;
+  categoryName.value = categoryParName;
+};
+
+const handleReset = () => {
+  Title.value = "";
+  description.value = "";
+  categoryName.value = "";
+  categoryPicked.value = false;
+  categoryExist.value = false;
+  categoryExistPost.value = false;
+  categories.value = [];
+  formError.value = true;
+};
 
 watchDebounced(
   categoryName,
-  () => {
-    fetchCategories();
-    categories.value.map((item) => {
-      if (item.name.toLowerCase() === categoryName.value.toLowerCase()) {
-        categoryExist.value = true;
-      } else {
-        categoryExist.value = false;
-      }
+  async () => {
+    await fetchCategories();
+    const categoryExists = categories.value.some((item) => {
+      return item.name.toLowerCase() === categoryName.value.toLowerCase();
     });
+    categoryExist.value = categoryExists;
   },
   { debounce: 500, maxWait: 850 }
 );
@@ -188,6 +221,7 @@ const changeCategoryName = (event) => {
   } else {
     categoryName.value = "";
   }
+  categoryPicked.value = false;
 };
 
 const createCategory = async () => {
