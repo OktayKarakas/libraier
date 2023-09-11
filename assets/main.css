@@ -3,7 +3,10 @@
 @tailwind utilities;
 html {
   font-family: "Rubik", sans-serif;
-  background-image: url("~/assets/ui/background/background-mobile.svg");
-  background-size: cover; /* Adjusts image size to cover the entire element */
-  background-repeat: no-repeat; /* Prevents image repetition */
+  background-image: url("~/assets/background-mobile.svg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #00cc99;
+  min-height: 100vh;
 }
