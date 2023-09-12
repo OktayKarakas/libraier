@@ -61,6 +61,7 @@
               <li v-if="loggedIn">
                 <NuxtLink
                   to="/user/1234/page"
+                  @click="closeMenuOnNavigate"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >My Page</NuxtLink
                 >
@@ -68,6 +69,7 @@
               <li v-if="loggedIn">
                 <NuxtLink
                   href="/user/1234/page"
+                  @click="closeMenuOnNavigate"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >Favourite Prompts</NuxtLink
                 >
@@ -75,6 +77,7 @@
               <li v-if="loggedIn">
                 <NuxtLink
                   to="/user/1234/page"
+                  @click="closeMenuOnNavigate"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >Owned Prompts</NuxtLink
                 >
@@ -82,12 +85,22 @@
               <li v-if="loggedIn">
                 <NuxtLink
                   to="/user/1234/page"
+                  @click="closeMenuOnNavigate"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >Created Prompts</NuxtLink
                 >
               </li>
               <li v-if="loggedIn">
                 <NuxtLink
+                  to="/user/prompts/write"
+                  @click="closeMenuOnNavigate"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  >Write Prompts</NuxtLink
+                >
+              </li>
+              <li v-if="loggedIn">
+                <NuxtLink
+                  @click="closeMenuOnNavigate"
                   to="/user/settings"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >Settings</NuxtLink
@@ -149,7 +162,6 @@
         <div
           class="items-center justify-between w-full md:flex md:w-auto md:order-1 z-50"
           :class="[{ hidden: !isMenuOpen, block: isMenuOpen }]"
-          @click="handleNavbarMenu"
           id="navbar-user"
         >
           <ul
@@ -160,6 +172,7 @@
                 to="/"
                 class="block py-2 pl-3 pr-4 text-gray-900 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
                 aria-current="page"
+                @click="closeMenuOnNavigate"
                 >Home</NuxtLink
               >
             </li>
@@ -167,6 +180,7 @@
               <NuxtLink
                 to="/about"
                 class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                @click="closeMenuOnNavigate"
                 >About</NuxtLink
               >
             </li>
@@ -174,6 +188,7 @@
               <NuxtLink
                 to="/help"
                 class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                @click="closeMenuOnNavigate"
                 >Help</NuxtLink
               >
             </li>
@@ -181,6 +196,7 @@
               <NuxtLink
                 to="/prompts/categories"
                 class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                @click="closeMenuOnNavigate"
                 >Prompts</NuxtLink
               >
             </li>
@@ -203,6 +219,11 @@ const currentRoute = computed(() => route.fullPath);
 const isMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 const userData = ref({});
+
+function closeMenuOnNavigate() {
+  isMenuOpen.value = false;
+  isUserMenuOpen.value = false;
+}
 
 watch(currentRoute, async (newVal, oldVal) => {
   if (data?.value?.expires) {

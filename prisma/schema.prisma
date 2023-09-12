@@ -75,7 +75,7 @@ model Comment {
 
 model Tag {
   id String @id @default(uuid())
-  titles String[]
+  title String
   promptId String
   prompt Prompt @relation(fields: [promptId], references: [id])
 }

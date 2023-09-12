@@ -90,6 +90,63 @@ export default defineEventHandler(async (event) => {
             }
           }
         }
+      } else if (query.tagCreate) {
+        if (typeof query.email === "string") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: query.email,
+            },
+          });
+          if (user) {
+            if (token && token.sub) {
+              const compareAsync = promisify(bcrypt.compare);
+              const result = await compareAsync(token.sub, user.password);
+              if (result) {
+                if (body.name) {
+                  const trimmedName = body.name.trim().toLowerCase();
+                  const nameWithoutMultipleSpaces = trimmedName.replace(
+                    /\s{2,}/g,
+                    " "
+                  );
+                  const nameArr = nameWithoutMultipleSpaces.split(" ");
+                  const name = nameArr.join("_");
+                  const promptId = "7d8cd721-199c-4f91-a4dc-407977d843d3";
+                  const sameTagExist = await prisma.tag.findFirst({
+                    where: {
+                      AND: [{ title: name }, { promptId: promptId }],
+                    },
+                  });
+
+                  if (sameTagExist) {
+                    console.log("same tag exist.");
+                    return {
+                      status: 400,
+                      json: { error: "tag_exist" },
+                    };
+                  } else {
+                    const trimmedName = body.name.trim().toLowerCase();
+                    const nameWithoutMultipleSpaces = trimmedName.replace(
+                      /\s{2,}/g,
+                      " "
+                    );
+                    const nameArr = nameWithoutMultipleSpaces.split(" ");
+                    const name = nameArr.join("_");
+                    await prisma.tag.create({
+                      data: {
+                        promptId: "7d8cd721-199c-4f91-a4dc-407977d843d3",
+                        title: name,
+                      },
+                    });
+                    return {
+                      status: 200,
+                      json: { success: true },
+                    };
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
 
@@ -116,6 +173,22 @@ export default defineEventHandler(async (event) => {
           });
           return {
             categories,
+          };
+        }
+      } else if (query.getPrompt) {
+        if (typeof query.promptTitle === "string") {
+          const prompts = await prisma.prompt.findMany({
+            where: {
+              title: {
+                startsWith: query.promptTitle,
+              },
+            },
+            include: {
+              tags: true,
+            },
+          });
+          return {
+            prompts,
           };
         }
       }

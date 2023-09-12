@@ -136,6 +136,10 @@
           </button>
         </div>
       </form>
+      <button @click="handlePostTag" class="text-white">post tags</button>
+      <button @click="handlePromptsGet" class="text-white">
+        handlePromptsGet
+      </button>
     </div>
   </div>
 </template>
@@ -145,6 +149,29 @@ import DOMPurify from "dompurify";
 import { watchDebounced } from "@vueuse/core";
 const { status, data } = useAuth();
 
+async function handlePostTag() {
+  await useFetch(
+    `/api/user/prompts?email=${data.value.user.email}&tagCreate=true`,
+    {
+      method: "POST",
+      body: {
+        name: "tosbir",
+      },
+    }
+  );
+}
+async function handlePromptsGet() {
+  await useFetch(
+    `/api/user/prompts?email=${data.value.user.email}&tagCreate=true`,
+    {
+      method: "GET",
+      query: {
+        promptTitle: "asdasdasdTESTTT",
+        getPrompt: true,
+      },
+    }
+  );
+}
 const categoryName = ref("");
 const categoryExistPost = ref(false);
 const categoryExist = ref(false);
