@@ -102,6 +102,7 @@ export default defineEventHandler(async (event) => {
               const compareAsync = promisify(bcrypt.compare);
               const result = await compareAsync(token.sub, user.password);
               if (result) {
+                console.log("testing.");
                 if (body.name) {
                   const trimmedName = body.name.trim().toLowerCase();
                   const nameWithoutMultipleSpaces = trimmedName.replace(
