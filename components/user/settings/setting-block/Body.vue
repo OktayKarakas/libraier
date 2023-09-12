@@ -68,6 +68,7 @@
 </template>
 
 <script setup>
+const { data: auth0userData } = useAuth();
 const getUserData = async () => {
   try {
     const { data } = useAuth();
@@ -106,20 +107,33 @@ async function handleSubmit() {
   });
 }
 
-const { fullName, email, profilePhoto, username, description } =
-  userData?.data?.value.user.user;
-
 function resetExistUserNameErr() {
   sameUserNameExist.value = false;
 }
 
-const formFullName = ref(fullName);
-const formUserName = ref(username);
-const formDescription = ref(description);
-const formProfilePhoto = ref(profilePhoto);
+const formFullName = ref(auth0userData.value.user.name);
+const formUserName = ref(auth0userData.value.user.name);
+const formDescription = ref("");
+const formProfilePhoto = ref(auth0userData.value.user.image);
+const email = ref(auth0userData.value.user.email);
 const sameUserNameExist = ref(false);
 const formPending = ref(false);
 const sendData = ref({});
+
+if (userData?.data?.value?.user?.user) {
+  const {
+    fullName,
+    email: fetchEmail,
+    profilePhoto,
+    username,
+    description,
+  } = userData?.data?.value?.user?.user;
+  formFullName.value = fullName;
+  formUserName.value = username;
+  formDescription.value = description;
+  formProfilePhoto.value = profilePhoto;
+  email.value = fetchEmail;
+}
 </script>
 
 <style scoped>
