@@ -11,6 +11,11 @@
           class="w-[37px] h-[37px] rounded-full object-cover"
         />
         <img
+          v-else-if="data?.user?.image"
+          :src="data?.user?.image"
+          class="w-[37px] h-[37px] rounded-full object-cover"
+        />
+        <img
           v-else
           src="~/assets/user/user-template-photo-setting.jpg"
           class="w-[37px] h-[37px] rounded-full object-cover"
