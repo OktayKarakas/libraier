@@ -39,7 +39,7 @@ model Prompt {
   comments Comment[]
   categoryId String
   categoryName String
-  tags Tag[]
+  tagId String[]
   ownedByUsers OwnedPrompt[]
   favoritedByUsers FavoritedPrompt[]
   category Category @relation(fields: [categoryId], references: [id])
@@ -76,8 +76,6 @@ model Comment {
 model Tag {
   id String @id @default(uuid())
   title String
-  promptId String
-  prompt Prompt @relation(fields: [promptId], references: [id])
 }
 
 model Category {

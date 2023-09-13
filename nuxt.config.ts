@@ -1,7 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  modules: ["@pinia/nuxt", "vue3-carousel-nuxt", "@sidebase/nuxt-auth"],
+  modules: [
+    "@pinia/nuxt",
+    "vue3-carousel-nuxt",
+    "@sidebase/nuxt-auth",
+    "@element-plus/nuxt",
+  ],
   runtimeConfig: {
     public: {
       imgAPI: process.env.IMG_API_KEY,

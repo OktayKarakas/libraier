@@ -15,12 +15,15 @@
     }
   },
   "devDependencies": {
+    "@element-plus/nuxt": "^1.0.6",
     "@nuxt/devtools": "latest",
     "@sidebase/nuxt-auth": "0.6.0-beta.4",
     "@types/bcrypt": "^5.0.0",
     "@types/node": "^18.17.0",
     "autoprefixer": "^10.4.14",
+    "element-plus": "^2.3.12",
     "nuxt": "^3.6.5",
+    "nuxt-anchorscroll": "^1.0.2",
     "postcss": "^8.4.27",
     "prisma": "^5.2.0",
     "tailwindcss": "^3.3.3"

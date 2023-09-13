@@ -4,7 +4,6 @@ import prisma from "~/helpers/misc/prisma";
 // @ts-ignore
 import bcrypt from "bcrypt";
 import { promisify } from "util";
-import user from "..";
 
 export default defineEventHandler(async (event) => {
   const token = await getToken({ event });
@@ -81,6 +80,7 @@ export default defineEventHandler(async (event) => {
                 return await prisma.prompt.create({
                   data: {
                     writerId: user.id,
+
                     categoryId: "0c086969-d6f8-4859-91c0-f2185a7226c4",
                     categoryName: "test",
                     ...body,
@@ -110,10 +110,9 @@ export default defineEventHandler(async (event) => {
                   );
                   const nameArr = nameWithoutMultipleSpaces.split(" ");
                   const name = nameArr.join("_");
-                  const promptId = "7d8cd721-199c-4f91-a4dc-407977d843d3";
                   const sameTagExist = await prisma.tag.findFirst({
                     where: {
-                      AND: [{ title: name }, { promptId: promptId }],
+                      AND: [{ title: name }],
                     },
                   });
 
@@ -133,7 +132,6 @@ export default defineEventHandler(async (event) => {
                     const name = nameArr.join("_");
                     await prisma.tag.create({
                       data: {
-                        promptId: "7d8cd721-199c-4f91-a4dc-407977d843d3",
                         title: name,
                       },
                     });
@@ -171,6 +169,7 @@ export default defineEventHandler(async (event) => {
               },
             },
           });
+          console.log(categories);
           return {
             categories,
           };
@@ -182,9 +181,6 @@ export default defineEventHandler(async (event) => {
               title: {
                 startsWith: query.promptTitle,
               },
-            },
-            include: {
-              tags: true,
             },
           });
           return {

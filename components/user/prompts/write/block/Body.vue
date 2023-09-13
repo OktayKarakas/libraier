@@ -13,7 +13,7 @@
             required
             name="titleInput"
             v-model="Title"
-            class="bg-[#252525] border borderColor w-[253px] h-[28px] text-white rounded-[5px]"
+            class="bg-[#252525] border borderColor w-[253px] h-[28px] text-white rounded-[5px] px-[5px]"
           />
         </div>
         <div class="flex flex-col items-center gap-[20px] pt-[40px]">
@@ -27,7 +27,7 @@
               <input
                 id="category"
                 name="category"
-                class="bg-[#252525] border borderColor w-[226px] h-[28px] text-white rounded-[5px] rounded-tr-[0px] rounded-br-[0px]"
+                class="bg-[#252525] border borderColor w-[226px] h-[28px] text-white rounded-[5px] rounded-tr-[0px] rounded-br-[0px] px-[5px]"
                 @input="changeCategoryName"
                 required
                 :value="categoryName"
@@ -61,6 +61,25 @@
                   {{ category.name }}
                 </p>
               </div>
+            </div>
+            <div class="flex flex-col items-center gap-[20px] pt-[40px]">
+              <label
+                for="tagInput"
+                class="text-white font-semibold text-[20px] leading-[20px] w-[253px]"
+                >Tags</label
+              >
+              <input
+                id="tagInput"
+                required
+                name="tagInput"
+                placeholder="CHAT GPT"
+                disabled
+                v-model="tags"
+                class="bg-[#252525] border borderColor w-[253px] h-[28px] text-white rounded-[5px] px-[5px]"
+              />
+              <p class="text-white text-[9px]">
+                For now prompts only available for chatgpt.
+              </p>
             </div>
             <div class="flex flex-col items-center gap-[20px] pt-[40px]">
               <p
@@ -116,6 +135,20 @@
                 class="bg-[#252525] border borderColor w-[253px] h-[419px] text-white rounded-[5px] resize-none"
               ></textarea>
             </div>
+            <div class="flex flex-col items-center gap-[20px] pt-[40px]">
+              <label
+                for="detailsInput"
+                class="text-white font-semibold text-[20px] leading-[20px] w-[253px]"
+                >Details</label
+              >
+              <textarea
+                id="detailsInput"
+                name="detailsInput"
+                v-model="details"
+                required
+                class="bg-[#252525] border borderColor w-[253px] h-[419px] text-white rounded-[5px] resize-none"
+              ></textarea>
+            </div>
           </div>
         </div>
         <div
@@ -136,10 +169,6 @@
           </button>
         </div>
       </form>
-      <button @click="handlePostTag" class="text-white">post tags</button>
-      <button @click="handlePromptsGet" class="text-white">
-        handlePromptsGet
-      </button>
     </div>
   </div>
 </template>
@@ -148,57 +177,76 @@
 import DOMPurify from "dompurify";
 import { watchDebounced } from "@vueuse/core";
 const { status, data } = useAuth();
-
-async function handlePostTag() {
-  await useFetch(
-    `/api/user/prompts?email=${data.value.user.email}&tagCreate=true`,
-    {
-      method: "POST",
-      body: {
-        name: "tosbir",
-      },
-    }
-  );
-}
-async function handlePromptsGet() {
-  await useFetch(
-    `/api/user/prompts?email=${data.value.user.email}&tagCreate=true`,
-    {
-      method: "GET",
-      query: {
-        promptTitle: "asdasdasdTESTTT",
-        getPrompt: true,
-      },
-    }
-  );
-}
 const categoryName = ref("");
 const categoryExistPost = ref(false);
 const categoryExist = ref(false);
 const categories = ref([]);
 const Title = ref("");
 const description = ref("");
+const details = ref("");
 const formError = ref(true);
 const categoryPicked = ref(false);
+const tags = ref("");
+const postReqSuccess = ref(false);
+
+watch(postReqSuccess, async (newVal, oldVal) => {
+  if (newVal) {
+  }
+});
 
 async function sendForm() {
-  if (!description.value || !Title.value) {
+  if (!description.value || !Title.value || !categoryName.value) {
     formError.value = true;
   } else {
     formError.value = false;
   }
   if (!formError.value) {
-    const sendData = {
-      title: Title.value,
-      description: description.value,
-      price: 0,
-    };
-    await useFetch("/api/user/prompts", {
-      method: "POST",
-      body: sendData,
-      query: { email: data.value.user.email, postPrompt: true },
+    const trimmedName = categoryName.value.trim().toLowerCase();
+    const nameWithoutMultipleSpaces = trimmedName.replace(/\s{2,}/g, " ");
+    const nameArr = nameWithoutMultipleSpaces.split(" ");
+    const name = nameArr.join("_");
+    const { data: categoryData } = await useFetch("/api/user/prompts", {
+      method: "GET",
+      query: { getCategory: true, categoryTitle: name },
     });
-    console.log("test");
+
+    if (categoryData?.value?.result?.categories) {
+      const categoryId = categoryData.value.result.categories.find((item) => {
+        return item.name === name;
+      });
+      if (categoryId?.id) {
+        const sendData = {
+          title: Title.value,
+          description: description.value,
+          price: 0,
+          tagId: ["7e96c5ab-18e8-47bc-8ed8-bd01dce437d2"],
+          details: details.value,
+          categoryName: categoryName.value,
+          categoryId: categoryId.id,
+        };
+        const { status } = await useFetch("/api/user/prompts", {
+          method: "POST",
+          body: sendData,
+          query: { email: data.value.user.email, postPrompt: true },
+        });
+        if (status.value === "success") {
+          postReqSuccess.value = true;
+          ElNotification({
+            title: "Prompt has been created.",
+            message: "Click to see your prompt",
+            onClick: () => {
+              console.log("toast clicked!");
+              return;
+            },
+            duration: 2000,
+            type: "success",
+          });
+          handleReset();
+        } else {
+          postReqSuccess.value = false;
+        }
+      }
+    }
   }
 }
 
@@ -207,7 +255,19 @@ const handleCategoryClick = (categoryParName) => {
   categoryName.value = categoryParName;
 };
 
+function scrollToTop() {
+  window.scrollTo(0, 0);
+}
+
 const handleReset = () => {
+  if (!postReqSuccess.value) {
+    ElNotification({
+      title: "Info",
+      message: "Data has been reset.",
+      duration: 2000,
+      type: "info",
+    });
+  }
   Title.value = "";
   description.value = "";
   categoryName.value = "";
@@ -216,6 +276,9 @@ const handleReset = () => {
   categoryExistPost.value = false;
   categories.value = [];
   formError.value = true;
+  details.value = "";
+  postReqSuccess.value = false;
+  scrollToTop();
 };
 
 watchDebounced(

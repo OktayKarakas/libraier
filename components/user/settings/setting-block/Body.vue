@@ -39,6 +39,7 @@
           type="text"
         />
       </div>
+
       <div class="flex flex-col gap-[14px]">
         <label
           class="text-white headingShadow text-[14px] font-semibold leading-[20px]"
