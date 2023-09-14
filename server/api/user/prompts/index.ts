@@ -169,12 +169,11 @@ export default defineEventHandler(async (event) => {
               },
             },
           });
-          console.log(categories);
           return {
             categories,
           };
         }
-      } else if (query.getPrompt) {
+      } else if (query.getPromptByTitle) {
         if (typeof query.promptTitle === "string") {
           const prompts = await prisma.prompt.findMany({
             where: {
@@ -185,6 +184,25 @@ export default defineEventHandler(async (event) => {
           });
           return {
             prompts,
+          };
+        }
+      } else if (query.getPromptByUserId) {
+        if (typeof query.writerId === "string" && query?.skip && query?.take) {
+          const prompts = await prisma.prompt.findMany({
+            where: {
+              writerId: query.writerId,
+            },
+            skip: Number(query.skip),
+            take: Number(query.take),
+          });
+          const totalCount = await prisma.prompt.count({
+            where: {
+              writerId: query.writerId,
+            },
+          });
+          return {
+            prompts,
+            totalCount,
           };
         }
       }

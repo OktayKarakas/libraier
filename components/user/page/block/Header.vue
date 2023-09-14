@@ -3,9 +3,23 @@
     <div class="flex justify-between px-[15px] pt-[14px]">
       <!-- left -->
       <div class="flex items-center gap-[7px]">
-        <img src="~/assets/user/user-template-photo.svg" />
+        <img
+          v-if="userData?.profilePhoto"
+          :src="userData?.profilePhoto"
+          class="w-[24px] h-[24px] rounded-full object-cover"
+        />
+        <img
+          v-else-if="data?.user.image && userData?.profilePhoto !== ''"
+          :src="data?.user?.image"
+          class="w-[24px] h-[24px] rounded-full object-cover"
+        />
+        <img
+          v-else
+          src="~/assets/user/user-template-photo-setting.jpg"
+          class="w-[24px] h-[24px] rounded-full object-cover"
+        />
         <p class="text-[12px] font-normal leading-[15px] text-white">
-          username
+          {{ userData?.username || "Loading..." }}
         </p>
       </div>
       <!-- right -->
@@ -25,16 +39,36 @@
       <p
         class="text-[#8B8B8B] text-[10px] font-normal leading-[12px] max-w-[274px] mx-auto"
       >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur.
+        {{ userData?.description || "..." }}
       </p>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const route = useRoute();
+const { data } = useAuth();
+const userData = ref({});
+userData.value = await fetchData();
+async function fetchData() {
+  if (route.params.id) {
+    const {
+      data: userFetchData,
+      pending,
+      error,
+      status,
+    } = await useFetch("/api/user", {
+      method: "GET",
+      query: {
+        getUserWithoutAuth: true,
+        id: route.params.id,
+      },
+    });
+    return userFetchData.value?.user;
+  } else {
+    navigateTo("/404");
+  }
+}
+</script>
 
 <style scoped></style>

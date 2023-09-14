@@ -30,7 +30,7 @@ async function fetchUserData() {
       pending,
       error,
     } = await useFetch("/api/user", {
-      query: { email: data.value.user.email },
+      query: { email: data.value.user.email, getUser: true },
     });
     return userData.value.user.user;
   }

@@ -9,11 +9,39 @@
     <input
       type="text"
       placeholder="Search username's Prompts"
+      v-model="searchInput"
       class="text-[10px] my-auto outline-none focus:ring-0 w-full mr-[5px] border-0"
     />
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const emit = defineEmits(["searchInputUserPrompt"]);
+import { watchDebounced } from "@vueuse/core";
+const searchInput = ref("");
+
+watchDebounced(
+  searchInput,
+  async () => {
+    const prompts = await fetchUserPrompts();
+    emit("searchInputUserPrompt", {
+      prompts,
+      searchInput,
+    });
+  },
+  { debounce: 500, maxWait: 850 }
+);
+
+async function fetchUserPrompts() {
+  const { data } = await useFetch("/api/user/prompts", {
+    method: "GET",
+    query: {
+      getPromptByTitle: true,
+      promptTitle: searchInput.value,
+    },
+  });
+  return data?.value?.result?.prompts;
+}
+</script>
 
 <style scoped></style>

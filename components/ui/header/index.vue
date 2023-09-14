@@ -22,7 +22,7 @@
             />
             <img
               class="w-8 h-8 rounded-full bg-white"
-              v-else-if="data?.user.image"
+              v-else-if="data?.user.image && userData?.profilePhoto !== ''"
               :src="data?.user.image"
               alt="user photo"
             />
@@ -60,8 +60,12 @@
             <ul class="py-2" aria-labelledby="user-menu-button">
               <li v-if="loggedIn">
                 <NuxtLink
-                  to="/user/1234/page"
-                  @click="closeMenuOnNavigate"
+                  @click="
+                    () => {
+                      closeMenuOnNavigate();
+                      handleMyPage();
+                    }
+                  "
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >My Page</NuxtLink
                 >
@@ -225,6 +229,17 @@ function closeMenuOnNavigate() {
   isUserMenuOpen.value = false;
 }
 
+async function handleMyPage() {
+  if (!userData?.value?.id) {
+    userData.value = await fetchUserData();
+    if (userData?.value?.id) {
+      navigateTo(`/user/${userData.value.id}/page`);
+    }
+  } else {
+    navigateTo(`/user/${userData.value.id}/page`);
+  }
+}
+
 watch(currentRoute, async (newVal, oldVal) => {
   if (data?.value?.expires) {
     const expirationDate = new Date(data.value.expires);
@@ -264,7 +279,7 @@ async function fetchUserData() {
       pending,
       error,
     } = await useFetch("/api/user", {
-      query: { email: data.value.user.email },
+      query: { email: data.value.user.email, getUser: true },
     });
     return userData.value.user.user;
   }
@@ -274,7 +289,7 @@ async function fetchUserData() {
   return;
 }
 
-if (status.value === "authenticated") {
+if (status.value === "authenticated" && !userData.value?.id) {
   userData.value = await fetchUserData();
 }
 

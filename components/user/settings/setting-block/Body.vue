@@ -58,11 +58,6 @@
         >
           {{ formPending ? "Loading.." : "Save" }}
         </button>
-        <button
-          class="text-white w-[115px] h-[25px] bg-[#BF0000] text-[10px] leading-[20px] rounded-[5px] headingShadow buttonShadow"
-        >
-          Remove Account
-        </button>
       </div>
     </div>
   </div>
@@ -73,7 +68,9 @@ const { data: auth0userData } = useAuth();
 const getUserData = async () => {
   try {
     const { data } = useAuth();
-    const userData = await useFetch(`/api/user?email=${data.value.user.email}`);
+    const userData = await useFetch(
+      `/api/user?email=${data.value.user.email}&getUser=true`
+    );
     return userData;
   } catch {
     console.log("error user.");
@@ -82,14 +79,37 @@ const getUserData = async () => {
 const userData = await getUserData();
 async function handleSubmit() {
   formPending.value = true;
-  sendData.value = {
-    fullName: formFullName.value,
-    username: formUserName.value,
-    description: formDescription.value,
-  };
+
+  if (userData?.data?.value?.user?.user) {
+    if (userData?.data?.value?.user?.user.username !== formUserName.value) {
+      sendData.value = {
+        fullName: formFullName.value,
+        username: formUserName.value,
+        description: formDescription.value,
+      };
+    } else {
+      sendData.value = {
+        fullName: formFullName.value,
+        description: formDescription.value,
+      };
+    }
+  } else {
+    if (auth0userData.value.user.name === formUserName.value) {
+      sendData.value = {
+        fullName: formFullName.value,
+        description: formDescription.value,
+      };
+    } else {
+      sendData.value = {
+        fullName: formFullName.value,
+        username: formUserName.value,
+        description: formDescription.value,
+      };
+    }
+  }
 
   const { data, pending, error, refresh } = await useFetch(
-    `/api/user/settings?email=${email}`,
+    `/api/user/settings?email=${email.value}`,
     {
       method: "PATCH",
       body: JSON.stringify(sendData.value),
@@ -111,7 +131,6 @@ async function handleSubmit() {
 function resetExistUserNameErr() {
   sameUserNameExist.value = false;
 }
-
 const formFullName = ref(auth0userData.value.user.name);
 const formUserName = ref(auth0userData.value.user.name);
 const formDescription = ref("");

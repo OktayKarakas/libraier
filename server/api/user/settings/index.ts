@@ -29,7 +29,6 @@ export default defineEventHandler(async (event) => {
                       username: body.username,
                     },
                   });
-                  console.log("test");
                   if (sameUserNameExist) {
                     await prisma.user.update({
                       where: {
@@ -97,7 +96,7 @@ export default defineEventHandler(async (event) => {
                     email: query.email,
                   },
                   data: {
-                    profilePhoto: null,
+                    profilePhoto: "",
                   },
                 });
               }

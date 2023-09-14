@@ -11,7 +11,7 @@
           class="w-[37px] h-[37px] rounded-full object-cover"
         />
         <img
-          v-else-if="data?.user?.image"
+          v-else-if="data?.user.image && userData?.profilePhoto !== ''"
           :src="data?.user?.image"
           class="w-[37px] h-[37px] rounded-full object-cover"
         />
@@ -51,7 +51,7 @@ async function fetchUserData() {
       pending,
       error,
     } = await useFetch("/api/user", {
-      query: { email: data.value.user.email },
+      query: { email: data.value.user.email, getUser: true },
     });
     return userData.value.user.user;
   }
