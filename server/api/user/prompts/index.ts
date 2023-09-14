@@ -181,6 +181,7 @@ export default defineEventHandler(async (event) => {
                 startsWith: query.promptTitle,
               },
             },
+            take: 5,
           });
           return {
             prompts,
