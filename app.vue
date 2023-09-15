@@ -1,9 +1,13 @@
 <template>
   <NuxtLayout>
-    <UiHeader />
-    <NuxtPage />
-
-    <UiFooter />
+    <div>
+      <NuxtLoadingIndicator />
+      <div>
+        <UiHeader />
+        <NuxtPage />
+        <UiFooter />
+      </div>
+    </div>
   </NuxtLayout>
 </template>
 
