@@ -39,6 +39,7 @@ model Prompt {
   comments Comment[]
   categoryId String
   categoryName String
+  approved Boolean @default(false)
   tagId String[]
   ownedByUsers OwnedPrompt[]
   favoritedByUsers FavoritedPrompt[]

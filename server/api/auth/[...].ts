@@ -31,7 +31,7 @@ export default NuxtAuthHandler({
                     await prisma.user.create({
                       data: {
                         fullName: token.name,
-                        username: token.name,
+                        username: token.name.toLowerCase(),
                         email: token.email,
                         password: hash,
                         profilePhoto: `${token.picture}`,

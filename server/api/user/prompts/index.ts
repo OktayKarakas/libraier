@@ -80,10 +80,8 @@ export default defineEventHandler(async (event) => {
                 return await prisma.prompt.create({
                   data: {
                     writerId: user.id,
-
-                    categoryId: "0c086969-d6f8-4859-91c0-f2185a7226c4",
-                    categoryName: "test",
                     ...body,
+                    approved: false,
                   },
                 });
               }
@@ -206,6 +204,32 @@ export default defineEventHandler(async (event) => {
             totalCount,
           };
         }
+      } else if (query.getPromptById) {
+        if (typeof query.promptId === "string") {
+          const prompts = await prisma.prompt.findUnique({
+            where: {
+              id: query.promptId,
+            },
+          });
+          return {
+            prompts,
+          };
+        }
+      } else if (query.getPromptTagById) {
+        const tagNames: string[] = [];
+        if (Array.isArray(query.tagId)) {
+          query.tagId.forEach(async (id: string) => {
+            const tag = await prisma.tag.findUnique({
+              where: {
+                id: id,
+              },
+            });
+            if (tag?.title) {
+              tagNames.push(tag?.title);
+            }
+          });
+        }
+        return tagNames;
       }
     }
     return main()

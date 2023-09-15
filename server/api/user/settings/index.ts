@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
                 if (body.username) {
                   const sameUserNameExist = await prisma.user.findUnique({
                     where: {
-                      username: body.username,
+                      username: body.username.toLowerCase(),
                     },
                   });
                   if (sameUserNameExist) {

@@ -64,9 +64,6 @@ devDependencies:
   nuxt:
     specifier: ^3.6.5
     version: 3.6.5(@types/node@18.17.0)
-  nuxt-anchorscroll:
-    specifier: ^1.0.2
-    version: 1.0.2
   postcss:
     specifier: ^8.4.27
     version: 8.4.27
@@ -4907,15 +4904,6 @@ packages:
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
-
-  /nuxt-anchorscroll@1.0.2:
-    resolution: {integrity: sha512-Mn68+wg/CNKYEQWaE1lgvB0updvnlSxz95+xCc3jvS3Qcfnerr1I6nMhElnt6I+ZJKSEXXkXElc62sX4+lL5qA==}
-    dependencies:
-      '@nuxt/kit': 3.7.1
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
     dev: true
 
   /nuxt@3.6.5(@types/node@18.17.0):

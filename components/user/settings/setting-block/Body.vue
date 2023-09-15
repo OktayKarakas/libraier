@@ -84,7 +84,7 @@ async function handleSubmit() {
     if (userData?.data?.value?.user?.user.username !== formUserName.value) {
       sendData.value = {
         fullName: formFullName.value,
-        username: formUserName.value,
+        username: formUserName.value.toLowerCase(),
         description: formDescription.value,
       };
     } else {
@@ -102,7 +102,7 @@ async function handleSubmit() {
     } else {
       sendData.value = {
         fullName: formFullName.value,
-        username: formUserName.value,
+        username: formUserName.value.toLowerCase(),
         description: formDescription.value,
       };
     }
