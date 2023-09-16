@@ -7,7 +7,7 @@
         <div class="flex flex-wrap gap-[5px] max-w-[140px]">
           <div
             class="flex gap-[6px] bg-white px-[5px] py-[1px] rounded-[2px] items-center w-[71px] h-[16px]"
-            v-if="props.promptData.result.prompts.approved"
+            v-if="props.promptData?.result?.prompts?.approved"
           >
             <p class="text-[10px]">Approved</p>
             <img
@@ -16,13 +16,11 @@
             />
           </div>
           <div
-            class="flex gap-[6px] bg-white px-[5px] py-[1px] rounded-[2px] items-center w-[71px] h-[16px]"
+            class="flex gap-[6px] bg-white px-[5px] py-[1px] rounded-[2px] items-center h-[16px]"
+            v-for="tag in tagFetch.result"
+            :key="tag.id"
           >
-            <p class="text-[10px]">Approved</p>
-            <img
-              src="~/assets/prompt/approved.svg"
-              class="w-[10px] h-[10px] mb-[1px]"
-            />
+            <p class="text-[10px]">{{ tag.title }}</p>
           </div>
         </div>
         <!-- top right -->
@@ -109,6 +107,7 @@ async function fetchUserData() {
 }
 const userFetch = await fetchUserData();
 const tagFetch = await fetchTagData(props.promptData);
+console.log(tagFetch.value);
 </script>
 
 <style scoped></style>

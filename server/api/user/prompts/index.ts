@@ -216,19 +216,35 @@ export default defineEventHandler(async (event) => {
           };
         }
       } else if (query.getPromptTagById) {
-        const tagNames: string[] = [];
+        const tagNames: Object[] = [];
+
         if (Array.isArray(query.tagId)) {
-          query.tagId.forEach(async (id: string) => {
+          const tagPromises = query.tagId.map(async (id) => {
             const tag = await prisma.tag.findUnique({
               where: {
                 id: id,
               },
             });
-            if (tag?.title) {
-              tagNames.push(tag?.title);
+            if (tag) {
+              tagNames.push(tag);
             }
           });
+
+          // Wait for all promises to resolve
+          await Promise.all(tagPromises);
+        } else {
+          if (query.tagId && typeof query.tagId === "string") {
+            const tag = await prisma.tag.findUnique({
+              where: {
+                id: query.tagId,
+              },
+            });
+            if (tag) {
+              return [tag];
+            }
+          }
         }
+
         return tagNames;
       }
     }

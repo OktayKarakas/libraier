@@ -22,7 +22,7 @@
             class="text-white font-semibold text-[20px] leading-[20px] w-[253px]"
             >Category</label
           >
-          <div>
+          <div class="flex flex-col items-center">
             <div class="flex">
               <input
                 id="category"
@@ -141,13 +141,21 @@
                 class="text-white font-semibold text-[20px] leading-[20px] w-[253px]"
                 >Details</label
               >
-              <textarea
-                id="detailsInput"
-                name="detailsInput"
-                v-model="details"
-                required
-                class="bg-[#252525] border borderColor w-[253px] h-[419px] text-white rounded-[5px] resize-none"
-              ></textarea>
+              <div
+                class="bg-white border-b-4 border-black w-[253px]"
+                @click="focusFirstParagraphInEditor"
+              >
+                <QuillEditor
+                  id="detailsInput"
+                  name="detailsInput"
+                  required
+                  theme="snow"
+                  class="bg-[#252525] text-white min-h-[300px]"
+                  content-type="html"
+                  v-model:content="details"
+                  ref="quillEditorRef"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -176,7 +184,19 @@
 <script setup>
 import DOMPurify from "dompurify";
 import { watchDebounced } from "@vueuse/core";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import "@vueup/vue-quill/dist/vue-quill.bubble.css";
 const { status, data } = useAuth();
+
+// const options = {
+//   modules: {
+//     toolbar: null,
+//   },
+//   readOnly: true,
+//   theme: "bubble",
+// };
+
 const categoryName = ref("");
 const categoryExistPost = ref(false);
 const categoryExist = ref(false);
@@ -188,11 +208,12 @@ const formError = ref(true);
 const categoryPicked = ref(false);
 const tags = ref("");
 const postReqSuccess = ref(false);
+const quillEditorRef = ref(null);
 
-watch(postReqSuccess, async (newVal, oldVal) => {
-  if (newVal) {
-  }
-});
+const focusFirstParagraphInEditor = () => {
+  const quill = quillEditorRef.value;
+  quill.focus();
+};
 
 async function sendForm() {
   if (!description.value || !Title.value || !categoryName.value) {

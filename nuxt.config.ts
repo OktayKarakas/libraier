@@ -54,5 +54,8 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  routeRules: {
+    "/user/prompts/write": { ssr: false },
+  },
   ssr: true,
 });
