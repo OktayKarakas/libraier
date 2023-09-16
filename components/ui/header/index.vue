@@ -283,8 +283,7 @@ async function fetchUserData() {
       query: { email: data.value.user.email, getUser: true },
     });
     if (error.value) {
-      console.log("test error");
-      return;
+      return { error: true };
     }
     if (userData.value.user?.success === false) {
       return {
