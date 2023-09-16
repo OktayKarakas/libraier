@@ -223,6 +223,7 @@ const currentRoute = computed(() => route.fullPath);
 const isMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 const userData = ref({});
+const tokenMissing = ref(false);
 
 function closeMenuOnNavigate() {
   isMenuOpen.value = false;
@@ -281,16 +282,33 @@ async function fetchUserData() {
     } = await useFetch("/api/user", {
       query: { email: data.value.user.email, getUser: true },
     });
+    if (error.value) {
+      console.log("test error");
+      return;
+    }
+    if (userData.value.user?.success === false) {
+      return {
+        error: true,
+      };
+    }
     return userData.value.user.user;
   }
-  if (error.value) {
-    return;
-  }
+
   return;
 }
 
 if (status.value === "authenticated" && !userData.value?.id) {
   userData.value = await fetchUserData();
+  if (userData.value?.error) {
+    tokenMissing.value = true;
+  }
+}
+
+if (tokenMissing.value) {
+  if (process.client) {
+    await navigateTo("/");
+    await signOut();
+  }
 }
 
 async function handleSignIn() {
