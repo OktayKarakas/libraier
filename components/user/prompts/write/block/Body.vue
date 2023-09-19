@@ -116,24 +116,27 @@
                 style="display: none"
               />
             </div>
-            <img
-              v-if="sanitizedImageUrl"
-              :src="sanitizedImageUrl"
-              alt="Uploaded Image"
-            />
             <div class="flex flex-col items-center gap-[20px] pt-[40px]">
               <label
                 for="descriptionInput"
                 class="text-white font-semibold text-[20px] leading-[20px] w-[253px]"
                 >Description</label
               >
-              <textarea
-                id="descriptionInput"
-                name="descriptionInput"
-                v-model="description"
-                required
-                class="bg-[#252525] border borderColor w-[253px] h-[419px] text-white rounded-[5px] resize-none"
-              ></textarea>
+              <div
+                class="bg-white border-b-4 border-black w-[253px]"
+                @click="quillFocus(quillDescriptionRef)"
+              >
+                <QuillEditor
+                  id="descriptionInput"
+                  name="descriptionInput"
+                  theme="snow"
+                  class="bg-[#252525] text-white min-h-[300px]"
+                  content-type="html"
+                  v-model:content="description"
+                  :options="toolbarOptions"
+                  ref="quillDescriptionRef"
+                />
+              </div>
             </div>
             <div class="flex flex-col items-center gap-[20px] pt-[40px]">
               <label
@@ -143,17 +146,17 @@
               >
               <div
                 class="bg-white border-b-4 border-black w-[253px]"
-                @click="focusFirstParagraphInEditor"
+                @click="quillFocus(quillDetailRef)"
               >
                 <QuillEditor
                   id="detailsInput"
                   name="detailsInput"
-                  required
                   theme="snow"
                   class="bg-[#252525] text-white min-h-[300px]"
                   content-type="html"
                   v-model:content="details"
-                  ref="quillEditorRef"
+                  :options="toolbarOptions"
+                  ref="quillDetailRef"
                 />
               </div>
             </div>
@@ -184,7 +187,7 @@
 <script setup>
 import DOMPurify from "dompurify";
 import { watchDebounced } from "@vueuse/core";
-import { QuillEditor } from "@vueup/vue-quill";
+import { QuillEditor, Delta } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import "@vueup/vue-quill/dist/vue-quill.bubble.css";
 const { status, data } = useAuth();
@@ -208,11 +211,29 @@ const formError = ref(true);
 const categoryPicked = ref(false);
 const tags = ref("");
 const postReqSuccess = ref(false);
-const quillEditorRef = ref(null);
+const quillDetailRef = ref(null);
+const quillDescriptionRef = ref(null);
 
-const focusFirstParagraphInEditor = () => {
-  const quill = quillEditorRef.value;
-  quill.focus();
+const quillFocus = (quillData) => {
+  if (quillData) {
+    quillData.focus();
+  }
+};
+
+const toolbarOptions = {
+  modules: {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"], // toggled buttons
+      ["blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ script: "sub" }, { script: "super" }], // superscript/subscript
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      [{ font: [] }],
+      [{ align: [] }],
+    ],
+  },
 };
 
 async function sendForm() {
@@ -235,13 +256,15 @@ async function sendForm() {
       const categoryId = categoryData.value.result.categories.find((item) => {
         return item.name === name;
       });
+      const sanitizedDescription = DOMPurify.sanitize(description.value);
+      const sanitizedDetails = DOMPurify.sanitize(details.value);
       if (categoryId?.id) {
         const sendData = {
           title: Title.value,
-          description: description.value,
+          description: sanitizedDescription,
           price: 0,
           tagId: ["7e96c5ab-18e8-47bc-8ed8-bd01dce437d2"],
-          details: details.value,
+          details: sanitizedDetails,
           categoryName: categoryName.value,
           categoryId: categoryId.id,
         };
@@ -290,14 +313,14 @@ const handleReset = () => {
     });
   }
   Title.value = "";
-  description.value = "";
+  description.value = `<p></p>`;
   categoryName.value = "";
   categoryPicked.value = false;
   categoryExist.value = false;
   categoryExistPost.value = false;
   categories.value = [];
   formError.value = true;
-  details.value = "";
+  details.value = "<p></p>";
   postReqSuccess.value = false;
   scrollToTop();
 };
