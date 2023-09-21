@@ -37,6 +37,7 @@
     "flowbite": "^1.8.1",
     "next-auth": "4.21.1",
     "pinia": "^2.1.6",
+    "vue-dompurify-html": "^4.1.4",
     "vue-uuid": "^3.0.0",
     "vue3-carousel-nuxt": "^1.1.0"
   }

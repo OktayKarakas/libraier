@@ -1,6 +1,6 @@
 <template>
   <div>
-    <UserPageBlockSearch
+    <UserOwnedPromptsBlockSearch
       @searchInputUserPrompt="(e) => handleSearch(e)"
       @searchInputEmpty="(e) => handleInputEmpty(e)"
       v-if="!noPrompts"
@@ -8,7 +8,7 @@
     <h3
       class="text-[#D9D9D9] font-bold text-[24px] leading-[28px] pb-[25px] pl-[10px]"
     >
-      Created Prompts
+      Owned Prompts
     </h3>
     <div class="px-3 grid grid-cols-3 gap-3 gap-y-5 pb-[50px]">
       <div
@@ -20,7 +20,7 @@
         <p
           class="text-[18px] font-semibold leading-[21px] text-center text-white h-full overflow-hidden text-ellipsis mt-2"
         >
-          {{ prompt.title }}
+          {{ prompt.promptTitle }}
         </p>
       </div>
     </div>
@@ -39,46 +39,59 @@
 <script setup>
 const route = useRoute();
 const userPrompts = ref([]);
+const searchNoPrompts = ref(false);
+
 const skipPag = ref(0);
 const takePag = ref(10);
+const fetchedAlreadyData = ref(false);
 const isShowButtonActive = ref(true);
-const noPrompts = ref(true);
-const searchNoPrompts = ref(false);
+const noPrompts = ref(false);
 async function fetchPrompts() {
   if (route.params?.id) {
     const { data } = await useFetch("/api/user/prompts", {
       method: "GET",
       query: {
-        getPromptByUserId: true,
-        writerId: route.params.id,
+        getPromptByOwnedUserId: true,
+        userId: route.params.id,
         skip: Number(skipPag.value),
         take: Number(takePag.value),
       },
     });
-    searchNoPrompts.value = false;
     noPrompts.value = false;
-    if (data.value.result.prompts.length <= 0) {
+
+    if (data.value.result.totalCount <= 0) {
       isShowButtonActive.value = false;
       noPrompts.value = true;
       return;
-    } else if (arraysAreEqual(userPrompts.value, data.value.result.prompts)) {
+    } else if (arraysAreEqual(userPrompts.value, data.value.result)) {
       isShowButtonActive.value = false;
       return;
     } else {
-      userPrompts.value = userPrompts.value.concat(data.value.result.prompts);
-      if (userPrompts.value.length < takePag.value) {
-        isShowButtonActive.value = false;
+      if (fetchedAlreadyData.value) {
+        userPrompts.value = userPrompts.value.concat(
+          ...data.value.result.prompt
+        );
+        if (data.value.result.totalCount === userPrompts.value.length) {
+          isShowButtonActive.value = false;
+          return;
+        }
+      } else {
+        userPrompts.value = userPrompts.value.concat(data.value.result);
+
+        if (userPrompts.value[0]?.prompt?.length < takePag.value) {
+          isShowButtonActive.value = false;
+        }
       }
     }
-    if (userPrompts.value.length >= data.value.result.totalCount) {
+    if (userPrompts.value[0]?.prompt?.length >= data.value.result.totalCount) {
       isShowButtonActive.value = false;
     } else {
       isShowButtonActive.value = true;
       noPrompts.value = false;
     }
   }
-
-  return userPrompts.value;
+  fetchedAlreadyData.value = true;
+  return userPrompts.value[0]?.prompt;
 }
 
 function arraysAreEqual(arr1, arr2) {
@@ -130,17 +143,19 @@ function generate() {
 }
 
 const handleSearch = async (e) => {
+  searchNoPrompts.value = false;
   isShowButtonActive.value = false;
   userPrompts.value = e.prompts;
-  skipPag.value = 0;
-  takePag.value = 10;
-  if (e.prompts.length <= 0) {
+  if (userPrompts.value.length <= 0) {
     searchNoPrompts.value = true;
   }
+  skipPag.value = 0;
+  takePag.value = 10;
   if (e.searchInput.value === "") {
     userPrompts.value = [];
     skipPag.value = 0;
     takePag.value = 10;
+    fetchedAlreadyData.value = false;
     userPrompts.value = await fetchPrompts();
   }
 };

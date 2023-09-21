@@ -48,11 +48,12 @@ model Prompt {
 }
 
 model OwnedPrompt {
-  id String @id @default(uuid())
-  userId String
+  id       String @id @default(uuid())
+  userId   String
   promptId String
-  user User @relation(fields: [userId], references: [id])
-  prompt Prompt @relation(fields: [promptId], references: [id])
+  promptTitle String
+  user     User   @relation(fields: [userId], references: [id])
+  prompt   Prompt  @relation(fields: [promptId], references: [id])
 }
 
 model FavoritedPrompt {

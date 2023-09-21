@@ -143,6 +143,40 @@ export default defineEventHandler(async (event) => {
             }
           }
         }
+      } else if (query.getPrompt) {
+        if (typeof query.email === "string") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: query.email,
+            },
+          });
+          if (user) {
+            if (token && token.sub) {
+              const compareAsync = promisify(bcrypt.compare);
+              const result = await compareAsync(token.sub, user.password);
+              if (result) {
+                return await prisma.ownedPrompt.create({
+                  data: {
+                    userId: user.id,
+                    ...body,
+                  },
+                });
+              } else {
+                return {
+                  error: true,
+                };
+              }
+            } else {
+              return {
+                error: true,
+              };
+            }
+          } else {
+            return {
+              error: true,
+            };
+          }
+        }
       }
     }
 
@@ -246,6 +280,113 @@ export default defineEventHandler(async (event) => {
         }
 
         return tagNames;
+      } else if (query.getPromptByOwnedUserId) {
+        if (query.userId && typeof query.userId === "string") {
+          const prompt = await prisma.ownedPrompt.findMany({
+            where: {
+              userId: query.userId,
+            },
+            skip: Number(query.skip),
+            take: Number(query.take),
+          });
+          const totalCount = await prisma.ownedPrompt.count({
+            where: {
+              userId: query.userId,
+            },
+          });
+          if (prompt) {
+            return { prompt, totalCount };
+          }
+        }
+      } else if (query.getPromptByTitleAndUserId) {
+        if (typeof query.promptTitle === "string") {
+          if (query.userId && typeof query.userId === "string") {
+            const prompts = await prisma.prompt.findMany({
+              where: {
+                AND: [
+                  {
+                    title: {
+                      startsWith: query.promptTitle,
+                    },
+                  },
+                  {
+                    writerId: {
+                      equals: query.userId,
+                    },
+                  },
+                ],
+              },
+
+              take: 5,
+            });
+            return prompts;
+          }
+        }
+      } else if (query.getOwnedPromptByTitleAndUserId) {
+        if (typeof query.promptTitle === "string") {
+          if (query.userId && typeof query.userId === "string") {
+            const prompts = await prisma.ownedPrompt.findMany({
+              where: {
+                AND: [
+                  {
+                    promptTitle: {
+                      startsWith: query.promptTitle,
+                    },
+                  },
+                  {
+                    userId: {
+                      equals: query.userId,
+                    },
+                  },
+                ],
+              },
+
+              take: 5,
+            });
+            return prompts;
+          }
+        }
+      } else if (query.checkUserHasPrompt) {
+        if (typeof query.promptId === "string") {
+          if (typeof query.userEmail === "string") {
+            const user = await prisma.user.findUnique({
+              where: {
+                email: query.userEmail,
+              },
+            });
+            if (user) {
+              if (token && token.sub) {
+                const compareAsync = promisify(bcrypt.compare);
+                const result = await compareAsync(token.sub, user.password);
+                if (result) {
+                  const prompt = await prisma.ownedPrompt.findFirst({
+                    where: {
+                      AND: [
+                        {
+                          promptId: {
+                            equals: query.promptId,
+                          },
+                        },
+                        {
+                          userId: {
+                            equals: user.id,
+                          },
+                        },
+                      ],
+                    },
+                  });
+                  if (prompt) {
+                    return prompt;
+                  } else {
+                    return {
+                      success: false,
+                    };
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
     return main()

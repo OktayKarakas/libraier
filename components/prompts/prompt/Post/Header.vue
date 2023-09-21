@@ -107,7 +107,6 @@ async function fetchUserData() {
 }
 const userFetch = await fetchUserData();
 const tagFetch = await fetchTagData(props.promptData);
-console.log(tagFetch.value);
 </script>
 
 <style scoped></style>

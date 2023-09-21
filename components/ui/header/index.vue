@@ -63,7 +63,7 @@
                   @click="
                     () => {
                       closeMenuOnNavigate();
-                      handleMyPage();
+                      handleMyPage('page');
                     }
                   "
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
@@ -80,8 +80,12 @@
               </li>
               <li v-if="loggedIn">
                 <NuxtLink
-                  to="/user/1234/page"
-                  @click="closeMenuOnNavigate"
+                  @click="
+                    () => {
+                      closeMenuOnNavigate();
+                      handleMyPage('ownedPrompts');
+                    }
+                  "
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >Owned Prompts</NuxtLink
                 >
@@ -230,14 +234,14 @@ function closeMenuOnNavigate() {
   isUserMenuOpen.value = false;
 }
 
-async function handleMyPage() {
+async function handleMyPage(route) {
   if (!userData?.value?.id) {
     userData.value = await fetchUserData();
     if (userData?.value?.id) {
-      navigateTo(`/user/${userData.value.id}/page`);
+      navigateTo(`/user/${userData.value.id}/${route}`);
     }
   } else {
-    navigateTo(`/user/${userData.value.id}/page`);
+    navigateTo(`/user/${userData.value.id}/${route}`);
   }
 }
 
