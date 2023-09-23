@@ -35,15 +35,15 @@
           <img
             src="~/assets/user/user-template-photo.svg"
             class="w-[24px] h-[24px] rounded-full bg-white"
-            v-if="!userFetch.user.profilePhoto"
+            v-if="!userFetch?.user.profilePhoto"
           />
           <img
-            :src="userFetch.user.profilePhoto"
+            :src="userFetch?.user.profilePhoto"
             class="w-[24px] h-[24px] rounded-full bg-white"
             v-else
           />
           <p class="text-white text-[12px]">
-            {{ userFetch.user.username }}
+            {{ userFetch?.user.username }}
           </p>
         </div>
         <!-- bottom right -->
@@ -96,11 +96,11 @@ async function fetchTagData(promptData) {
   return tagData;
 }
 async function fetchUserData() {
-  const { data: userData } = useFetch("/api/user", {
+  const { data: userData } = await useFetch("/api/user", {
     method: "GET",
     query: {
       getUserWithoutAuth: true,
-      id: props.promptData.result.prompts.writerId,
+      id: props.promptData.result.prompts?.writerId,
     },
   });
   return userData;

@@ -1,11 +1,20 @@
 <template>
   <div class="mt-[50px]">
-    <PromptsCategoriesSearch />
-    <PromptsCategoriesList />
+    <PromptsCategoriesSearch @searchRendered="onSearchRendered" />
+    <p v-if="!searchRendered" class="text-center pb-12 font-bold">Loading...</p>
+    <client-only>
+      <PromptsCategoriesList v-if="searchRendered" />
+    </client-only>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const searchRendered = ref(false);
+
+const onSearchRendered = () => {
+  searchRendered.value = true;
+};
+</script>
 
 <style scoped>
 .buttonParagraph {

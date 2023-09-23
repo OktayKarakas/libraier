@@ -3,7 +3,10 @@
     <h3 class="heading text-[32px] font-bold text-center mb-[40px]">
       Categories
     </h3>
-    <div class="flex flex-col items-center mb-[50px]">
+    <div
+      class="flex flex-col items-center mb-[50px]"
+      v-if="!store.noCategories"
+    >
       <div
         class="w-[281px] h-[45px] bg-white gap-5 flex items-center rounded-[10px] mx-auto"
       >
@@ -38,8 +41,22 @@
   </div>
 </template>
 
-<script>
-export default {};
+<script setup>
+import {
+  useNoCategoriesStore,
+  useFetchCategories,
+} from "@/stores/prompts/categories/categories.ts";
+const store = useNoCategoriesStore();
+const categories = useFetchCategories();
+const emit = defineEmits(["searchRendered"]);
+const getFirstCategories = async () => {
+  const categoriesVal = await categories.getCategories("all time", "top");
+  return categoriesVal;
+};
+
+await getFirstCategories();
+
+emit("searchRendered");
 </script>
 
 <style scoped>

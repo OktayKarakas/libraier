@@ -54,7 +54,6 @@ export default defineEventHandler(async (event) => {
               profilePhoto: true,
             },
           });
-
           return user;
         }
       }

@@ -2,20 +2,23 @@
   <div class="flex flex-col items-center">
     <div class="grid grid-cols-2 gap-[20px] w-[281px] mx-auto mb-[60px]">
       <div
-        class="w-[130px] h-[143px] promptBlock text-center flex items-center cursor-pointer"
-        v-for="category in filteredArr"
+        class="w-[130px] h-[143px] promptBlock text-center flex flex-wrap items-center cursor-pointer"
+        v-for="category in categories.categoriesArr"
         :key="category.id"
         @click="() => navigateToPrompts(category)"
       >
         <h3 class="text-white w-[103px] mx-auto promptText">
-          {{ category.title }}
+          {{ handleCategoryName(category.name) }}
         </h3>
       </div>
     </div>
+    <p class="font-bold mb-[50px] text-[16px]" v-if="store.noCategories">
+      There is no categories.
+    </p>
     <button
       class="bg-white rounded-full buttonParagraph px-[15px] py-[4px] mb-[50px]"
       @click="handleClick"
-      v-if="limit < categoriesArr.length - 1"
+      v-if="!store.noCategories"
     >
       Show More
     </button>
@@ -23,41 +26,41 @@
 </template>
 
 <script setup>
-const categoriesArr = [
-  {
-    id: 0,
-    title: "Create Writing Prompts",
-    categoryName: "creative-writing-prompts",
-  },
-  { id: 1, title: "Read Prompts", categoryName: "read-prompts" },
-  {
-    id: 2,
-    title: "Create Writing Prompts",
-    categoryName: "creative-writing-prompts",
-  },
-  { id: 3, title: "Read Prompts", categoryName: "read-prompts" },
-  {
-    id: 4,
-    title: "Create Writing Prompts",
-    categoryName: "creative-writing-prompts",
-  },
-  { id: 5, title: "Read Prompts", categoryName: "read-prompts" },
-];
-const limit = ref(1);
-const filteredArr = computed(() => {
-  return categoriesArr.filter((item) => {
-    return item.id <= limit.value;
-  });
-});
+import {
+  useNoCategoriesStore,
+  useFetchCategories,
+} from "@/stores/prompts/categories/categories.ts";
+const store = useNoCategoriesStore();
+
+const categories = useFetchCategories();
+
 const handleClick = () => {
   limit.value += 2;
 };
 
+const handleCategoryName = (name) => {
+  const words = name.split("_");
+  const formattedName = words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+  return formattedName;
+};
+
 const navigateToPrompts = async (element) => {
   await navigateTo({
-    path: `/prompts/prompt/${element.categoryName}`,
+    path: `/prompts/prompt/${element.id}`,
   });
 };
+
+if (
+  categories.categoriesArr?.length <= 0 ||
+  !categories.categoriesArr?.length
+) {
+  store.noCategoriesHandle();
+} else {
+  store.noCategoriesHandle(false);
+}
 </script>
 
 <style scoped>

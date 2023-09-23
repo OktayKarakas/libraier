@@ -44,7 +44,7 @@
 import { useFooterModalOpenStore } from "@/stores/prompts/footer/modal.ts";
 const store = useFooterModalOpenStore();
 const props = defineProps(["promptData"]);
-const { data } = useAuth();
+const { data, status, signIn } = useAuth();
 const route = useRoute();
 const isUserHasPrompt = ref(false);
 async function checkUserHasPrompt() {
@@ -61,38 +61,44 @@ async function checkUserHasPrompt() {
 
 async function handleGetPrompt() {
   try {
-    const { data: fetchData, error } = await useFetch("/api/user/prompts", {
-      method: "POST",
-      body: {
-        promptId: route.params.promptId,
-        promptTitle: props.promptData.result.prompts.title,
-      },
-      query: {
-        getPrompt: true,
-        email: data.value.user.email,
-      },
-    });
-    if (fetchData.value.result.error) {
-      isUserHasPrompt.value = false;
-      return;
-    } else {
-      ElNotification({
-        title: "Success",
-        message: "Prompt added to your account.",
-        type: "success",
+    if (status.value !== "unauthenticated") {
+      const { data: fetchData, error } = await useFetch("/api/user/prompts", {
+        method: "POST",
+        body: {
+          promptId: route.params.promptId,
+          promptTitle: props.promptData.result.prompts.title,
+        },
+        query: {
+          getPrompt: true,
+          email: data.value.user.email,
+        },
       });
-      isUserHasPrompt.value = true;
+      if (fetchData.value.result.error) {
+        isUserHasPrompt.value = false;
+        return;
+      } else {
+        ElNotification({
+          title: "Success",
+          message: "Prompt added to your account.",
+          type: "success",
+        });
+        isUserHasPrompt.value = true;
+      }
+    } else {
+      await signIn("google");
     }
   } catch (e) {
     console.error(e);
   }
 }
 
-const userHasPromptValue = await checkUserHasPrompt();
-if (userHasPromptValue.value?.result?.success === false) {
-  isUserHasPrompt.value = false;
-} else {
-  isUserHasPrompt.value = true;
+if (status.value !== "unauthenticated") {
+  const userHasPromptValue = await checkUserHasPrompt();
+  if (userHasPromptValue.value?.result?.success === false) {
+    isUserHasPrompt.value = false;
+  } else {
+    isUserHasPrompt.value = true;
+  }
 }
 </script>
 
