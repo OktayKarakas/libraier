@@ -210,6 +210,7 @@ export default defineEventHandler(async (event) => {
         const orderBy: any = { updatedAt: null, favNumCount: null };
 
         // Define the date filter based on the selected time range
+        const count = await prisma.category.count();
         const currentDate = new Date();
         switch (query.timeRange) {
           case "all time":
@@ -241,7 +242,7 @@ export default defineEventHandler(async (event) => {
             break;
           default:
             // Handle invalid time range selection
-            throw new Error("Invalid time range selection");
+            console.error("Invalid time range.");
         }
         switch (query.queryType) {
           case "top":
@@ -258,48 +259,153 @@ export default defineEventHandler(async (event) => {
             break;
           default:
             // Handle invalid query type
-            throw new Error("Invalid query type");
+            console.error("Invalid query type");
         }
 
+        const isSearchInputClearedBool = JSON.parse(query.isSearchInputCleared);
+
+        const take = query.searchCategory
+          ? 5
+          : query.limit
+          ? Number(query.limit)
+          : 10;
+        const skip = isSearchInputClearedBool
+          ? 0
+          : query.searchCategory
+          ? 0
+          : query.skip
+          ? Number(query.skip)
+          : 0;
+
         if (orderBy.updatedAt && !orderBy.favNumCount) {
-          const categories = await prisma.category.findMany({
-            where: updatedVal,
-            orderBy: [
-              {
-                updatedAt: "desc",
+          if (
+            typeof query.searchCategory === "string" &&
+            query.searchCategory
+          ) {
+            const categories = await prisma.category.findMany({
+              where: {
+                ...updatedVal,
+                name: {
+                  startsWith: query.searchCategory,
+                },
               },
-            ],
-          });
-          return {
-            categories,
-          };
+              orderBy: [
+                {
+                  updatedAt: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+
+            return {
+              categories,
+              count,
+            };
+          } else {
+            const categories = await prisma.category.findMany({
+              where: updatedVal,
+              orderBy: [
+                {
+                  updatedAt: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+            return {
+              categories,
+              count,
+            };
+          }
         } else if (orderBy.favNumCount && orderBy.updatedAt) {
-          const categories = await prisma.category.findMany({
-            where: updatedVal,
-            orderBy: [
-              {
-                updatedAt: "desc",
+          if (
+            typeof query.searchCategory === "string" &&
+            query.searchCategory
+          ) {
+            const categories = await prisma.category.findMany({
+              where: {
+                ...updatedVal,
+                name: {
+                  startsWith: query.searchCategory,
+                },
               },
-              {
-                favNum: "desc",
-              },
-            ],
-          });
-          return {
-            categories,
-          };
+              orderBy: [
+                {
+                  updatedAt: "desc",
+                },
+                {
+                  favNum: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+            return {
+              categories,
+              count,
+            };
+          } else {
+            const categories = await prisma.category.findMany({
+              where: updatedVal,
+              orderBy: [
+                {
+                  updatedAt: "desc",
+                },
+                {
+                  favNum: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+            return {
+              categories,
+              count,
+            };
+          }
         } else if (orderBy.favNumCount && !orderBy.updatedAt) {
-          const categories = await prisma.category.findMany({
-            where: updatedVal,
-            orderBy: [
-              {
-                favNum: "desc",
+          if (
+            typeof query.searchCategory === "string" &&
+            query.searchCategory
+          ) {
+            const categories = await prisma.category.findMany({
+              where: {
+                ...updatedVal,
+                name: {
+                  startsWith: query.searchCategory,
+                },
               },
-            ],
-          });
-          return {
-            categories,
-          };
+              orderBy: [
+                {
+                  favNum: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+
+            return {
+              categories,
+              count,
+            };
+          } else {
+            const categories = await prisma.category.findMany({
+              where: updatedVal,
+              orderBy: [
+                {
+                  favNum: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+
+            return {
+              categories,
+              count,
+            };
+          }
         }
       } else if (query.getPromptByTitle) {
         if (typeof query.promptTitle === "string") {

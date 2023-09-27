@@ -11,6 +11,16 @@
 <script setup>
 const searchRendered = ref(false);
 
+if (process.client) {
+  setTimeout(() => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, 400);
+}
+
 const onSearchRendered = () => {
   searchRendered.value = true;
 };

@@ -18,7 +18,11 @@
     <button
       class="bg-white rounded-full buttonParagraph px-[15px] py-[4px] mb-[50px]"
       @click="handleClick"
-      v-if="!store.noCategories"
+      v-if="
+        !store.noCategories &&
+        !categories.isLimitHit &&
+        !categories.isSearchInput
+      "
     >
       Show More
     </button>
@@ -35,7 +39,7 @@ const store = useNoCategoriesStore();
 const categories = useFetchCategories();
 
 const handleClick = () => {
-  limit.value += 2;
+  categories.increaseLimit();
 };
 
 const handleCategoryName = (name) => {
