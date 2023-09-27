@@ -2,20 +2,30 @@
   <div class="flex flex-col items-center">
     <div class="grid grid-cols-2 gap-[20px] w-[281px] mx-auto mb-[60px]">
       <div
-        class="w-[130px] h-[143px] promptBlock text-center flex items-center cursor-pointer"
-        v-for="prompt in filteredArr"
+        class="w-[130px] h-[143px] promptBlock text-center flex flex-wrap items-center cursor-pointer"
+        v-for="prompt in prompts.promptsArr"
         :key="prompt.id"
-        @click="() => navigateToPrompts(prompt)"
+        @click="() => navigateToPrompt(prompt)"
       >
-        <h3 class="text-white w-[103px] mx-auto promptText">
-          {{ prompt.title }}
+        <h3
+          class="text-white w-[103px] mx-auto promptText max-w-[103px] max-h-[133px]"
+        >
+          {{ handlePromptName(prompt.title) }}
         </h3>
       </div>
     </div>
+    <p class="font-bold mb-[50px] text-[16px]" v-if="store.noPrompts">
+      There is no categories.
+    </p>
     <button
       class="bg-white rounded-full buttonParagraph px-[15px] py-[4px] mb-[50px]"
       @click="handleClick"
-      v-if="limit < filteredByCategory.length - 1"
+      v-if="
+        !store.noPrompts &&
+        !prompts.isLimitHit &&
+        !prompts.isSearchInput &&
+        !prompts.isLoading
+      "
     >
       Show More
     </button>
@@ -23,48 +33,35 @@
 </template>
 
 <script setup>
-const router = useRoute();
-const promptsArr = [
-  {
-    id: 0,
-    title: "Create Writing Prompts",
-    categoryName: "creative-writing-prompts",
-  },
-  { id: 1, title: "Read Prompts", categoryName: "read-prompts" },
-  {
-    id: 2,
-    title: "Create Writing Prompts",
-    categoryName: "creative-writing-prompts",
-  },
-  { id: 3, title: "Read Prompts", categoryName: "read-prompts" },
-  {
-    id: 4,
-    title: "Create Writing Prompts",
-    categoryName: "creative-writing-prompts",
-  },
-  { id: 5, title: "Read Prompts", categoryName: "read-prompts" },
-  { id: 6, title: "Read Prompts", categoryName: "read-prompts" },
-  { id: 7, title: "Read Prompts", categoryName: "read-prompts" },
-  { id: 8, title: "Read Prompts", categoryName: "read-prompts" },
-];
-const limit = ref(1);
-const filteredByCategory = computed(() => {
-  return promptsArr.filter((item) => {
-    return item.categoryName === router.params.categoryId;
-  });
-});
-const filteredArr = computed(() => {
-  return filteredByCategory.value.filter((_item, index) => {
-    return limit.value >= index;
-  });
-});
+import { useNoPromptsStore, useFetchPrompts } from "@/stores/prompts/index.ts";
+const store = useNoPromptsStore();
+
+const prompts = useFetchPrompts();
+
 const handleClick = () => {
-  limit.value += 2;
+  prompts.increaseLimit();
 };
 
-const navigateToPrompts = async (element) => {
-  await navigateTo(`/prompts/prompt/${element.categoryName}/${element.id}`);
+const handlePromptName = (name) => {
+  const words = name.split(" ");
+  const formattedName = words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+  return formattedName;
 };
+
+const navigateToPrompt = async (element) => {
+  await navigateTo({
+    path: `/prompts/prompt/${element.categoryName}/${element.id}`,
+  });
+};
+
+if (prompts.promptsArr?.length <= 0 || !prompts.promptsArr?.length) {
+  store.noPromptsHandle();
+} else {
+  store.noPromptsHandle(false);
+}
 </script>
 
 <style scoped>
@@ -81,5 +78,8 @@ const navigateToPrompts = async (element) => {
   line-height: 21px;
   text-align: center;
   color: #ffffff;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

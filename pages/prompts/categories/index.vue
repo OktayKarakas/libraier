@@ -1,14 +1,22 @@
 <template>
   <div class="mt-[50px]">
     <PromptsCategoriesSearch @searchRendered="onSearchRendered" />
-    <p v-if="!searchRendered" class="text-center pb-12 font-bold">Loading...</p>
+    <p
+      v-if="!searchRendered || categories.isLoading"
+      class="text-center pb-12 font-bold"
+    >
+      Loading...
+    </p>
     <client-only>
-      <PromptsCategoriesList v-if="searchRendered" />
+      <PromptsCategoriesList v-if="searchRendered && !categories.isLoading" />
     </client-only>
   </div>
 </template>
 
 <script setup>
+import { useFetchCategories } from "@/stores/prompts/categories/categories.ts";
+
+const categories = useFetchCategories();
 const searchRendered = ref(false);
 
 if (process.client) {

@@ -1,24 +1,25 @@
-export const useNoCategoriesStore = defineStore("noCategories", {
+export const useNoPromptsStore = defineStore("noPrompts", {
   state: () => {
     return {
-      noCategories: false,
+      noPrompts: false,
     };
   },
   actions: {
-    noCategoriesHandle(val = true) {
-      this.noCategories = val;
+    noPromptsHandle(val = true) {
+      this.noPrompts = val;
     },
   },
 });
 
-export const useFetchCategories = defineStore("fetchCategories", () => {
-  const categoriesArr: any = ref([]);
-  const noCategories = useNoCategoriesStore();
+export const useFetchPrompts = defineStore("fetchPrompts", () => {
+  const promptsArr: any = ref([]);
+  const noPrompts = useNoPromptsStore();
   const limit = ref(2);
   const skip = ref(0);
   const showMoreClicked = ref(false);
   const pastTimeRangeVal = ref();
   const pastQueryTypeVal = ref();
+  const pastSearchCategory = ref();
   const isSearchCleared = ref(false);
   const isLimitHit = ref(false);
   const isSearchInput = ref(false);
@@ -42,27 +43,36 @@ export const useFetchCategories = defineStore("fetchCategories", () => {
     } else {
       skip.value += 2;
     }
-    await getCategories(pastTimeRangeVal.value, pastQueryTypeVal.value);
+    await getPrompts(
+      pastTimeRangeVal.value,
+      pastQueryTypeVal.value,
+      "",
+      false,
+      pastSearchCategory.value
+    );
   };
 
-  const getCategories = async (
+  const getPrompts = async (
     timeRange: any,
     queryType: any,
-    searchCategory: String = "",
-    isSearchInputCleared: Boolean = false
+    searchPrompt: String = "",
+    isSearchInputCleared: Boolean = false,
+    categoryName: string
   ) => {
     isLoading.value = true;
     if (
       pastTimeRangeVal.value !== timeRange ||
       pastQueryTypeVal.value !== queryType
     ) {
-      categoriesArr.value = [];
+      promptsArr.value = [];
       skip.value = 0;
     }
     pastTimeRangeVal.value = timeRange;
     pastQueryTypeVal.value = queryType;
+    pastSearchCategory.value = categoryName;
     isLimitHit.value = false;
-    if (searchCategory) {
+
+    if (searchPrompt) {
       isSearchInput.value = true;
     } else {
       isSearchInput.value = false;
@@ -71,32 +81,40 @@ export const useFetchCategories = defineStore("fetchCategories", () => {
       const { data } = await useFetch("/api/user/prompts", {
         method: "GET",
         query: {
-          getCategories: true,
+          getPrompts: true,
           timeRange: timeRange,
           queryType: queryType,
-          searchCategory: searchCategory,
+          searchPrompt: searchPrompt,
           limit: Number(limit.value),
           skip: Number(skip.value),
           isSearchInputCleared: isSearchInputCleared,
+          categoryName: categoryName,
         },
       });
 
-      if (searchCategory || isSearchInputCleared) {
+      if (searchPrompt || isSearchInputCleared) {
         showMoreClicked.value = false;
       }
+
+      interface Result {
+        prompts: Object[];
+        count: number;
+      }
+
+      const result = data.value && (data.value.result as Result);
 
       if (
         pastQueryTypeVal.value === queryType &&
         pastTimeRangeVal.value === timeRange
       ) {
         if (showMoreClicked.value) {
-          if (data.value?.result?.categories) {
-            categoriesArr.value.push(...data.value.result?.categories);
-            if (categoriesArr.value.length === data.value?.result?.count) {
+          if (result?.prompts) {
+            promptsArr.value.push(...result?.prompts);
+            if (promptsArr.value.length === result?.count) {
               isLimitHit.value = true;
             }
             isLoading.value = false;
-            return data.value.result.categories;
+            return result?.prompts;
           } else {
             isLoading.value = false;
             return undefined;
@@ -104,15 +122,18 @@ export const useFetchCategories = defineStore("fetchCategories", () => {
         }
       }
 
-      if (data.value?.result?.categories) {
-        categoriesArr.value = data.value.result.categories;
-        if (categoriesArr.value.length === 0) {
-          noCategories.noCategoriesHandle();
+      if (result?.prompts) {
+        promptsArr.value = result?.prompts;
+        if (promptsArr.value.length === result?.count) {
+          isLimitHit.value = true;
+        }
+        if (promptsArr.value.length === 0) {
+          noPrompts.noPromptsHandle();
         } else {
-          noCategories.noCategoriesHandle(false);
+          noPrompts.noPromptsHandle(false);
         }
         isLoading.value = false;
-        return data.value.result.categories;
+        return result?.prompts;
       } else {
         isLoading.value = false;
         return undefined;
@@ -123,8 +144,8 @@ export const useFetchCategories = defineStore("fetchCategories", () => {
   };
 
   return {
-    getCategories,
-    categoriesArr,
+    getPrompts,
+    promptsArr,
     increaseLimit,
     limit,
     handleisSearchCleared,

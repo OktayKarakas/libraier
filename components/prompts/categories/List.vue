@@ -21,7 +21,8 @@
       v-if="
         !store.noCategories &&
         !categories.isLimitHit &&
-        !categories.isSearchInput
+        !categories.isSearchInput &&
+        !categories.isLoading
       "
     >
       Show More
@@ -53,7 +54,7 @@ const handleCategoryName = (name) => {
 
 const navigateToPrompts = async (element) => {
   await navigateTo({
-    path: `/prompts/prompt/${element.id}`,
+    path: `/prompts/prompt/${element.id}/category/${element.name}`,
   });
 };
 

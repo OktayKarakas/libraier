@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import { promisify } from "util";
 
 export default defineEventHandler(async (event) => {
+  // @ts-ignore
   const token = await getToken({ event });
 
   if (event.node.req.method === "POST") {
@@ -262,7 +263,9 @@ export default defineEventHandler(async (event) => {
             console.error("Invalid query type");
         }
 
-        const isSearchInputClearedBool = JSON.parse(query.isSearchInputCleared);
+        const isSearchInputClearedBool: boolean = JSON.parse(
+          query.isSearchInputCleared as string
+        );
 
         const take = query.searchCategory
           ? 5
@@ -403,6 +406,213 @@ export default defineEventHandler(async (event) => {
 
             return {
               categories,
+              count,
+            };
+          }
+        }
+      } else if (query.getPrompts) {
+        let updatedVal = {};
+        const orderBy: any = { updatedAt: null, favNumCount: null };
+
+        // Define the date filter based on the selected time range
+        const count = await prisma.prompt.count({
+          where: {
+            categoryName: query.categoryName as string,
+          },
+        });
+        const currentDate = new Date();
+        switch (query.timeRange) {
+          case "all time":
+            // No additional filter needed for "all time"
+            updatedVal = {
+              categoryName: query.categoryName,
+            };
+            break;
+          case "past month":
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updatedVal = {
+              updatedAt: {
+                gte: currentDate,
+              },
+              categoryName: query.categoryName,
+            };
+            break;
+          case "past week":
+            currentDate.setDate(currentDate.getDate() - 7);
+            updatedVal = {
+              updatedAt: {
+                gte: currentDate,
+              },
+              categoryName: query.categoryName,
+            };
+            break;
+          case "past day":
+            currentDate.setDate(currentDate.getDate() - 1);
+            updatedVal = {
+              updatedAt: {
+                gte: currentDate,
+              },
+              categoryName: query.categoryName,
+            };
+            break;
+          default:
+            // Handle invalid time range selection
+            console.error("Invalid time range.");
+        }
+        switch (query.queryType) {
+          case "top":
+            orderBy.favNumCount = "desc";
+            orderBy.updatedAt = null;
+            break;
+          case "newest":
+            orderBy.updatedAt = "desc";
+            orderBy.favNumCount = null;
+            break;
+          case "popular":
+            orderBy.favNumCount = "desc";
+            orderBy.updatedAt = null;
+            break;
+          default:
+            // Handle invalid query type
+            console.error("Invalid query type");
+        }
+
+        const isSearchInputClearedBool: boolean = JSON.parse(
+          query.isSearchInputCleared as string
+        );
+
+        const take = query.searchPrompt
+          ? 5
+          : query.limit
+          ? Number(query.limit)
+          : 10;
+        const skip = isSearchInputClearedBool
+          ? 0
+          : query.searchPrompt
+          ? 0
+          : query.skip
+          ? Number(query.skip)
+          : 0;
+
+        if (orderBy.updatedAt && !orderBy.favNumCount) {
+          if (typeof query.searchPrompt === "string" && query.searchPrompt) {
+            const prompts = await prisma.prompt.findMany({
+              where: {
+                ...updatedVal,
+                title: {
+                  startsWith: query.searchPrompt,
+                },
+              },
+              orderBy: [
+                {
+                  updatedAt: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+
+            return {
+              prompts,
+              count,
+            };
+          } else {
+            const prompts = await prisma.prompt.findMany({
+              where: updatedVal,
+              orderBy: [
+                {
+                  updatedAt: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+            return {
+              prompts,
+              count,
+            };
+          }
+        } else if (orderBy.favNumCount && orderBy.updatedAt) {
+          if (typeof query.searchPrompt === "string" && query.searchPrompt) {
+            const prompts = await prisma.prompt.findMany({
+              where: {
+                ...updatedVal,
+                title: {
+                  startsWith: query.searchPrompt,
+                },
+              },
+              orderBy: [
+                {
+                  updatedAt: "desc",
+                },
+                {
+                  favNum: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+            return {
+              prompts,
+              count,
+            };
+          } else {
+            const prompts = await prisma.prompt.findMany({
+              where: updatedVal,
+              orderBy: [
+                {
+                  updatedAt: "desc",
+                },
+                {
+                  favNum: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+            return {
+              prompts,
+              count,
+            };
+          }
+        } else if (orderBy.favNumCount && !orderBy.updatedAt) {
+          console.log(query.searchPrompt);
+          if (typeof query.searchPrompt === "string" && query.searchPrompt) {
+            const prompts = await prisma.prompt.findMany({
+              where: {
+                title: {
+                  startsWith: query.searchPrompt,
+                },
+              },
+              orderBy: [
+                {
+                  favNum: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+
+            console.log("prompts " + prompts);
+            console.log(typeof prompts);
+
+            return {
+              prompts,
+              count,
+            };
+          } else {
+            const prompts = await prisma.prompt.findMany({
+              where: updatedVal,
+              orderBy: [
+                {
+                  favNum: "desc",
+                },
+              ],
+              take, // Add take option
+              skip, // Add skip option
+            });
+            return {
+              prompts,
               count,
             };
           }

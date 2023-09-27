@@ -15,11 +15,13 @@
           type="text"
           placeholder="Search"
           class="text-[14px] my-auto outline-none border-0 focus:ring-0"
+          v-model="searchInput"
         />
       </div>
       <div class="w-[281px] flex mt-[10px] mb-[3px] gap-[10px]">
         <select
           class="custom-select text-[12px] bg-white rounded-[5px] pl-[10px] pt-[4px] pb-[2px] cursor-pointer"
+          v-model="selectOptionOne"
         >
           <option value="top">Top</option>
           <option value="newest">Newest</option>
@@ -27,11 +29,12 @@
         </select>
         <select
           class="text-[12px] bg-white rounded-[5px] pl-[10px] pt-[4px] pb-[2px] cursor-pointer"
+          v-model="selectOptionTwo"
         >
-          <option value="all-time">All Time</option>
-          <option value="past-month">Past Month</option>
-          <option value="past-week">Past Week</option>
-          <option value="past-day">Past Day</option>
+          <option value="all time">All Time</option>
+          <option value="past month">Past Month</option>
+          <option value="past week">Past Week</option>
+          <option value="past day">Past Day</option>
         </select>
       </div>
     </div>
@@ -39,14 +42,80 @@
 </template>
 
 <script setup>
+import { useFetchPrompts } from "@/stores/prompts/index.ts";
+import { watchDebounced } from "@vueuse/core";
 const route = useRoute();
+const prompts = useFetchPrompts();
+const selectOptionOne = ref("top");
+const selectOptionTwo = ref("all time");
+const searchInput = ref("");
+const isSearchInputCleared = ref("");
+const emit = defineEmits(["searchRendered"]);
 const routeBasedTitle = computed(() => {
-  const words = route.params.categoryId.split("-");
+  const words = route.params.categoryName.split("_");
   const capitalizedWords = words.map(
     (word) => word.charAt(0).toUpperCase() + word.slice(1)
   );
   return capitalizedWords.join(" ");
 });
+
+const getFirstPrompts = async () => {
+  const promptsVal = await prompts.getPrompts(
+    "all time",
+    "top",
+    "",
+    false,
+    route.params.categoryName
+  );
+  return promptsVal;
+};
+
+if (route.fullPath) {
+  prompts.resetShowMore();
+}
+
+watch(searchInput, async (newVal) => {
+  if (newVal === "") {
+    isSearchInputCleared.value = true;
+    prompts.handleisSearchCleared(isSearchInputCleared.value);
+  } else {
+    isSearchInputCleared.value = false;
+    prompts.handleisSearchCleared(isSearchInputCleared.value);
+  }
+});
+
+watchDebounced(
+  searchInput,
+  async () => {
+    const getPromptsVal = async () => {
+      await prompts.getPrompts(
+        selectOptionTwo.value,
+        selectOptionOne.value,
+        searchInput.value?.toLowerCase(),
+        isSearchInputCleared.value,
+        route.params.categoryName
+      );
+    };
+    await getPromptsVal();
+  },
+  { debounce: 500, maxWait: 850 }
+);
+
+watch([selectOptionOne, selectOptionTwo], async (newX) => {
+  const getPromptsVal = async () => {
+    await prompts.getPrompts(
+      newX[1],
+      newX[0],
+      searchInput.value?.toLowerCase(),
+      false,
+      route.params.categoryName
+    );
+  };
+  await getPromptsVal();
+});
+
+await getFirstPrompts();
+emit("searchRendered");
 </script>
 
 <style scoped>

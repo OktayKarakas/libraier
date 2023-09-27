@@ -260,7 +260,7 @@ async function sendForm() {
       const sanitizedDetails = DOMPurify.sanitize(details.value);
       if (categoryId?.id) {
         const sendData = {
-          title: Title.value,
+          title: Title.value.toLowerCase(),
           description: sanitizedDescription,
           price: 0,
           tagId: ["7e96c5ab-18e8-47bc-8ed8-bd01dce437d2"],
