@@ -5,7 +5,7 @@
         class="w-[130px] h-[143px] promptBlock text-center flex flex-wrap items-center cursor-pointer"
         v-for="category in categories.categoriesArr"
         :key="category.id"
-        @click="() => navigateToPrompts(category)"
+        @click="async () => await navigateToPrompts(category)"
       >
         <h3 class="text-white w-[103px] mx-auto promptText">
           {{ handleCategoryName(category.name) }}

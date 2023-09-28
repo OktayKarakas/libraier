@@ -15,7 +15,7 @@
       </p>
       <button
         class="text-[14px] text-[#001C30] font-medium block w-[241px] bg-white rounded-md mt-[40px] mb-[20px] py-[5.5px] buttonShadow"
-        @click="() => navigateTo('/prompts/categories')"
+        @click="async () => await navigateTo('/prompts/categories')"
       >
         <span class="mr-1 ml-1">See Prompts</span>
         <img
@@ -25,6 +25,7 @@
       </button>
       <button
         class="text-[14px] font-medium block w-[241px] text-white bg-black rounded-md py-[5.5px] buttonShadow"
+        @click="handleWritePrompts"
       >
         Write Prompts
       </button>
@@ -32,7 +33,16 @@
   </div>
 </template>
 
-<script></script>
+<script setup>
+const { signIn, status } = useAuth();
+async function handleWritePrompts() {
+  if (status.value === "unauthenticated") {
+    await signIn("google", { callbackUrl: "/user/prompts/write" });
+  } else {
+    await navigateTo("/user/prompts/write");
+  }
+}
+</script>
 
 <style scoped>
 .heroHeading-1 {

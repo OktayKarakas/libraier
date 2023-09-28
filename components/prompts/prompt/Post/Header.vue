@@ -17,7 +17,7 @@
           </div>
           <div
             class="flex gap-[6px] bg-white px-[5px] py-[1px] rounded-[2px] items-center h-[16px]"
-            v-for="tag in tagFetch.result"
+            v-for="tag in tagFetch?.result"
             :key="tag.id"
           >
             <p class="text-[10px]">{{ tag.title }}</p>
@@ -100,7 +100,7 @@ async function fetchUserData() {
     method: "GET",
     query: {
       getUserWithoutAuth: true,
-      id: props.promptData.result.prompts?.writerId,
+      id: props.promptData?.result.prompts?.writerId,
     },
   });
   return userData;

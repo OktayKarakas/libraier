@@ -238,10 +238,10 @@ async function handleMyPage(route) {
   if (!userData?.value?.id) {
     userData.value = await fetchUserData();
     if (userData?.value?.id) {
-      navigateTo(`/user/${userData.value.id}/${route}`);
+      await navigateTo(`/user/${userData.value.id}/${route}`);
     }
   } else {
-    navigateTo(`/user/${userData.value.id}/${route}`);
+    await navigateTo(`/user/${userData.value.id}/${route}`);
   }
 }
 
@@ -255,7 +255,7 @@ watch(currentRoute, async (newVal, oldVal) => {
       }
     } else {
       if (expirationDate <= currentDate) {
-        navigateTo("/");
+        await navigateTo("/");
       }
     }
   }
@@ -315,8 +315,7 @@ if (tokenMissing.value) {
 }
 
 async function handleSignIn() {
-  await signIn("google");
-  navigateTo("/");
+  await signIn("google", "/");
 }
 
 function closeUserMenu() {

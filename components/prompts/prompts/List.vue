@@ -5,7 +5,7 @@
         class="w-[130px] h-[143px] promptBlock text-center flex flex-wrap items-center cursor-pointer"
         v-for="prompt in prompts.promptsArr"
         :key="prompt.id"
-        @click="() => navigateToPrompt(prompt)"
+        @click="async () => await navigateToPrompt(prompt)"
       >
         <h3
           class="text-white w-[103px] mx-auto promptText max-w-[103px] max-h-[133px]"

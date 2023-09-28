@@ -66,7 +66,7 @@ async function fetchData() {
     });
     return userFetchData.value?.user;
   } else {
-    navigateTo("/404");
+    await navigateTo("/404");
   }
 }
 </script>
