@@ -37,7 +37,7 @@ async function fetchUserPrompts() {
   const { data } = await useFetch("/api/user/prompts", {
     method: "GET",
     query: {
-      getOwnedPromptByTitleAndUserId: true,
+      getFavoritePromptByTitleAndUserId: true,
       promptTitle: searchInput.value,
       userId: route.params.id,
     },

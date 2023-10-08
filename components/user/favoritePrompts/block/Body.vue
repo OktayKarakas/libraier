@@ -11,18 +11,20 @@
       Favorite Prompts
     </h3>
     <div class="px-3 grid grid-cols-3 gap-3 gap-y-5 pb-[50px]">
-      <div
-        class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] max-h-[143px] min-h-[143px] carousel__item"
-        :style="`background: ${generate()}`"
-        v-for="prompt in userPrompts"
-        :key="prompt.id"
-      >
-        <p
-          class="text-[18px] font-semibold leading-[21px] text-center text-white h-full overflow-hidden text-ellipsis mt-2"
+      <client-only>
+        <div
+          class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] max-h-[143px] min-h-[143px] carousel__item"
+          :style="`background: ${generate()}`"
+          v-for="prompt in userPrompts"
+          :key="prompt.id"
         >
-          {{ prompt.promptTitle }}
-        </p>
-      </div>
+          <p
+            class="text-[18px] font-semibold leading-[21px] text-center text-white h-full overflow-hidden text-ellipsis mt-2"
+          >
+            {{ prompt.promptTitle }}
+          </p>
+        </div>
+      </client-only>
     </div>
     <p class="text-white text-center pb-24" v-if="noPrompts || searchNoPrompts">
       There is no prompts.

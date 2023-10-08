@@ -886,7 +886,7 @@ export default defineEventHandler(async (event) => {
             skip: Number(query.skip),
             take: Number(query.take),
           });
-          const totalCount = await prisma.ownedPrompt.count({
+          const totalCount = await prisma.favoritedPrompt.count({
             where: {
               userId: query.userId,
             },
@@ -923,6 +923,30 @@ export default defineEventHandler(async (event) => {
         if (typeof query.promptTitle === "string") {
           if (query.userId && typeof query.userId === "string") {
             const prompts = await prisma.ownedPrompt.findMany({
+              where: {
+                AND: [
+                  {
+                    promptTitle: {
+                      startsWith: query.promptTitle,
+                    },
+                  },
+                  {
+                    userId: {
+                      equals: query.userId,
+                    },
+                  },
+                ],
+              },
+
+              take: 5,
+            });
+            return prompts;
+          }
+        }
+      } else if (query.getFavoritePromptByTitleAndUserId) {
+        if (typeof query.promptTitle === "string") {
+          if (query.userId && typeof query.userId === "string") {
+            const prompts = await prisma.favoritedPrompt.findMany({
               where: {
                 AND: [
                   {
