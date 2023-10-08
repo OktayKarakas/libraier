@@ -1,13 +1,14 @@
 <template>
   <Carousel :items-to-show="2.6" :wrap-around="false">
-    <Slide v-for="slide in 10" :key="slide">
+    <Slide v-for="slide in data" :key="slide.id">
       <div
-        class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] block carousel__item"
+        class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] min-h-[143px] max-h-[143px] block carousel__item overflow-hidden text-center flex-wrap items-center cursor-pointer"
+        @click="handleClick(slide.categoryName, slide.id, slide.title)"
       >
         <p
           class="text-[18px] font-semibold leading-[21px] text-center text-white"
         >
-          Creative Writing Prompts
+          {{ handlePromptName(slide.title) }}
         </p>
       </div>
     </Slide>
@@ -24,6 +25,24 @@ export default {
     Carousel,
     Slide,
   },
+};
+</script>
+
+<script setup>
+const props = defineProps(["data"]);
+const data = props.data.value.result.categories;
+
+const handlePromptName = (name) => {
+  const words = name.split(" ");
+  const formattedName = words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+  return formattedName;
+};
+
+const handleClick = async (categoryName, promptId, promptName) => {
+  await navigateTo(`/prompts/prompt/${categoryName}/${promptId}/${promptName}`);
 };
 </script>
 

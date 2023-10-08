@@ -296,6 +296,9 @@ export default defineEventHandler(async (event) => {
                 {
                   updatedAt: "desc",
                 },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
+                },
               ],
               take, // Add take option
               skip, // Add skip option
@@ -311,6 +314,9 @@ export default defineEventHandler(async (event) => {
               orderBy: [
                 {
                   updatedAt: "desc",
+                },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
                 },
               ],
               take, // Add take option
@@ -340,6 +346,9 @@ export default defineEventHandler(async (event) => {
                 {
                   favNum: "desc",
                 },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
+                },
               ],
               take, // Add take option
               skip, // Add skip option
@@ -357,6 +366,9 @@ export default defineEventHandler(async (event) => {
                 },
                 {
                   favNum: "desc",
+                },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
                 },
               ],
               take, // Add take option
@@ -383,6 +395,9 @@ export default defineEventHandler(async (event) => {
                 {
                   favNum: "desc",
                 },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
+                },
               ],
               take, // Add take option
               skip, // Add skip option
@@ -398,6 +413,9 @@ export default defineEventHandler(async (event) => {
               orderBy: [
                 {
                   favNum: "desc",
+                },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
                 },
               ],
               take, // Add take option
@@ -507,6 +525,9 @@ export default defineEventHandler(async (event) => {
                 {
                   updatedAt: "desc",
                 },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
+                },
               ],
               take, // Add take option
               skip, // Add skip option
@@ -522,6 +543,9 @@ export default defineEventHandler(async (event) => {
               orderBy: [
                 {
                   updatedAt: "desc",
+                },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
                 },
               ],
               take, // Add take option
@@ -548,6 +572,9 @@ export default defineEventHandler(async (event) => {
                 {
                   favNum: "desc",
                 },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
+                },
               ],
               take, // Add take option
               skip, // Add skip option
@@ -566,6 +593,9 @@ export default defineEventHandler(async (event) => {
                 {
                   favNum: "desc",
                 },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
+                },
               ],
               take, // Add take option
               skip, // Add skip option
@@ -576,7 +606,6 @@ export default defineEventHandler(async (event) => {
             };
           }
         } else if (orderBy.favNumCount && !orderBy.updatedAt) {
-          console.log(query.searchPrompt);
           if (typeof query.searchPrompt === "string" && query.searchPrompt) {
             const prompts = await prisma.prompt.findMany({
               where: {
@@ -588,13 +617,13 @@ export default defineEventHandler(async (event) => {
                 {
                   favNum: "desc",
                 },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
+                },
               ],
               take, // Add take option
               skip, // Add skip option
             });
-
-            console.log("prompts " + prompts);
-            console.log(typeof prompts);
 
             return {
               prompts,
@@ -607,6 +636,9 @@ export default defineEventHandler(async (event) => {
                 {
                   favNum: "desc",
                 },
+                {
+                  id: "desc", // Use id as a secondary sorting field in descending order
+                },
               ],
               take, // Add take option
               skip, // Add skip option
@@ -616,6 +648,58 @@ export default defineEventHandler(async (event) => {
               count,
             };
           }
+        }
+      } else if (query.getPromptsByCategoryName) {
+        const total = await prisma.prompt.count();
+        let skip = 0;
+
+        if (total <= 11 && total > 6) {
+          skip = Math.floor(Math.random() * 3) + 1;
+          let checkIfNumOk: number = total - skip;
+
+          if (checkIfNumOk < 6) {
+            for (let i = 0; checkIfNumOk < 6; i++) {
+              skip--;
+              checkIfNumOk++;
+            }
+          }
+          if (skip < 0) {
+            skip = 0;
+          }
+        } else if (total > 11) {
+          skip = Math.floor(Math.random() * total - 6);
+
+          if (skip >= total) {
+            skip = total - 6;
+          }
+
+          if (skip < 0) {
+            skip = 0;
+          }
+
+          const checkIfNumOk: number = total - skip;
+
+          if (checkIfNumOk < 6) {
+            for (let i = 0; i++; total - skip > 6) {
+              skip--;
+            }
+          }
+        }
+        if (typeof query.promptCategory === "string") {
+          const categories = await prisma.prompt.findMany({
+            where: {
+              categoryName: {
+                startsWith: query.promptCategory,
+              },
+            },
+            take: 6,
+            skip,
+          });
+          return {
+            categories,
+          };
+        } else {
+          return {};
         }
       } else if (query.getPromptByTitle) {
         if (typeof query.promptTitle === "string") {
@@ -692,9 +776,110 @@ export default defineEventHandler(async (event) => {
         }
 
         return tagNames;
+      } else if (query.getFavoritedPromptByUserId) {
+        if (typeof query.userEmail === "string") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: query.userEmail,
+            },
+          });
+          if (user) {
+            if (token && token.sub) {
+              const compareAsync = promisify(bcrypt.compare);
+              const result = await compareAsync(token.sub, user.password);
+              if (result) {
+                if (query.userEmail && typeof query.userEmail === "string") {
+                  const prompts = await prisma.favoritedPrompt.findMany({
+                    where: {
+                      userId: user.id,
+                    },
+                  });
+                  const totalCount = await prisma.favoritedPrompt.count({
+                    where: {
+                      userId: user.id,
+                    },
+                  });
+                  if (prompts) {
+                    return {
+                      prompts,
+                      totalCount,
+                    };
+                  }
+                }
+              }
+            }
+          }
+        }
+      } else if (query.checkIfUserHasFavoritedPrompt) {
+        if (typeof query.userEmail === "string") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: query.userEmail,
+            },
+          });
+          if (user) {
+            if (token && token.sub) {
+              const compareAsync = promisify(bcrypt.compare);
+              const result = await compareAsync(token.sub, user.password);
+              if (result) {
+                if (
+                  query.userEmail &&
+                  typeof query.userEmail === "string" &&
+                  typeof query.promptId === "string" &&
+                  query.promptId
+                ) {
+                  const prompts = await prisma.favoritedPrompt.findFirst({
+                    where: {
+                      AND: [
+                        {
+                          userId: {
+                            equals: user.id,
+                          },
+                        },
+                        {
+                          promptId: {
+                            equals: query.promptId,
+                          },
+                        },
+                      ],
+                    },
+                  });
+                  if (prompts) {
+                    return {
+                      prompts,
+                      success: true,
+                    };
+                  } else {
+                    return {
+                      success: false,
+                    };
+                  }
+                }
+              }
+            }
+          }
+        }
       } else if (query.getPromptByOwnedUserId) {
         if (query.userId && typeof query.userId === "string") {
           const prompt = await prisma.ownedPrompt.findMany({
+            where: {
+              userId: query.userId,
+            },
+            skip: Number(query.skip),
+            take: Number(query.take),
+          });
+          const totalCount = await prisma.ownedPrompt.count({
+            where: {
+              userId: query.userId,
+            },
+          });
+          if (prompt) {
+            return { prompt, totalCount };
+          }
+        }
+      } else if (query.getFavoritePromptsByUserId) {
+        if (query.userId && typeof query.userId === "string") {
+          const prompt = await prisma.favoritedPrompt.findMany({
             where: {
               userId: query.userId,
             },
@@ -789,6 +974,122 @@ export default defineEventHandler(async (event) => {
                   });
                   if (prompt) {
                     return prompt;
+                  } else {
+                    return {
+                      success: false,
+                    };
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return main()
+      .then((result) => {
+        return { result };
+      })
+      .catch(async (e: any) => {
+        console.error(e);
+        await prisma.$disconnect();
+        process.exit(1);
+      });
+  } else if (event.node.req.method === "DELETE") {
+    async function main() {
+      const query = getQuery(event);
+      const body = await readBody(event);
+      if (query.unFavoritePrompt) {
+        if (typeof query.userEmail === "string") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: query.userEmail,
+            },
+          });
+          if (user) {
+            if (token && token.sub) {
+              const compareAsync = promisify(bcrypt.compare);
+              const result = await compareAsync(token.sub, user.password);
+              if (result) {
+                if (
+                  query.userEmail &&
+                  typeof query.userEmail === "string" &&
+                  query.promptId &&
+                  typeof query.promptId === "string"
+                ) {
+                  const deletePrompt = await prisma.favoritedPrompt.deleteMany({
+                    where: {
+                      AND: [
+                        {
+                          userId: {
+                            equals: user.id,
+                          },
+                        },
+                        {
+                          promptId: {
+                            equals: query.promptId,
+                          },
+                        },
+                      ],
+                    },
+                  });
+                  if (deletePrompt) {
+                    return {
+                      success: true,
+                    };
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return main()
+      .then((result) => {
+        return { result };
+      })
+      .catch(async (e: any) => {
+        console.error(e);
+        await prisma.$disconnect();
+        process.exit(1);
+      });
+  } else if (event.node.req.method === "PATCH") {
+    async function main() {
+      const query = getQuery(event);
+      const body = await readBody(event);
+      if (query.favoritePrompt) {
+        const query = getQuery(event);
+        const body = await readBody(event);
+        if (typeof query.userEmail === "string") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: query.userEmail,
+            },
+          });
+          if (user) {
+            if (token && token.sub) {
+              const compareAsync = promisify(bcrypt.compare);
+              const result = await compareAsync(token.sub, user.password);
+              if (result) {
+                if (
+                  query.promptId &&
+                  typeof query.promptId === "string" &&
+                  query.promptTitle &&
+                  typeof query.promptTitle === "string"
+                ) {
+                  const favoritedPrompt = await prisma.favoritedPrompt.create({
+                    data: {
+                      userId: user.id,
+                      promptId: query.promptId,
+                      promptTitle: query.promptTitle,
+                    },
+                  });
+
+                  if (favoritedPrompt) {
+                    return {
+                      success: true,
+                    };
                   } else {
                     return {
                       success: false,

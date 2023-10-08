@@ -15,7 +15,7 @@
       </div>
     </div>
     <p class="font-bold mb-[50px] text-[16px]" v-if="store.noPrompts">
-      There is no categories.
+      There is no prompts.
     </p>
     <button
       class="bg-white rounded-full buttonParagraph px-[15px] py-[4px] mb-[50px]"
@@ -53,7 +53,7 @@ const handlePromptName = (name) => {
 
 const navigateToPrompt = async (element) => {
   await navigateTo({
-    path: `/prompts/prompt/${element.categoryName}/${element.id}`,
+    path: `/prompts/prompt/${element.categoryName}/${element.id}/${element.title}`,
   });
 };
 

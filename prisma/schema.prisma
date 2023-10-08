@@ -60,6 +60,7 @@ model FavoritedPrompt {
   id String @id @default(uuid())
   userId String
   promptId String
+  promptTitle String
   user User @relation(fields: [userId], references: [id])
   prompt Prompt @relation(fields: [promptId], references: [id])
 }
