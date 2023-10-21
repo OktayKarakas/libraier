@@ -2,7 +2,7 @@
   <div>
     <!-- code-block-header -->
     <div
-      class="bg-black w-[275px] h-[28px] mx-auto mt-[50px] rounded-tr-[5px] rounded-tl-[5px] relative"
+      class="bg-black w-[275px] lg:w-[420px] h-[28px] mx-auto mt-[50px] rounded-tr-[5px] rounded-tl-[5px] relative"
     >
       <div class="absolute top-0 right-0 flex gap-2 mr-[17px] mt-[7px]">
         <div class="w-[13px] h-[13px] rounded-full bg-[#00CA4E]"></div>
@@ -12,14 +12,14 @@
     </div>
     <!-- code-block-body -->
     <div
-      class="bg-[#333333] opacity-[53%] w-[275px] h-[544px] mx-auto rounded-br-[5px] rounded-bl-[5px] code-block-shadow"
+      class="bg-[#333333] opacity-[53%] w-[275px] lg:w-[420px] h-[544px] mx-auto rounded-br-[5px] rounded-bl-[5px] code-block-shadow"
     ></div>
     <div
-      class="custom-bg w-[228px] h-[440px] mx-auto rounded-br-[5px] rounded-bl-[5px] z-10 mt-[-478px] code-block-shadow relative"
+      class="custom-bg w-[228px] lg:w-[378px] h-[440px] mx-auto rounded-br-[5px] rounded-bl-[5px] z-10 mt-[-478px] code-block-shadow relative"
     >
       <!-- close-open visual code-block-inner -->
       <div
-        class="bg-black w-[228px] h-[26px] mx-auto mt-[50px] rounded-tr-[5px] rounded-tl-[5px] relative"
+        class="bg-black w-[228px] lg:w-[378px] h-[26px] mx-auto mt-[50px] rounded-tr-[5px] rounded-tl-[5px] relative"
       >
         <div class="absolute top-0 right-0 flex gap-2 mr-[17px] mt-[7px]">
           <div class="w-[13px] h-[13px] rounded-full bg-[#00CA4E]"></div>

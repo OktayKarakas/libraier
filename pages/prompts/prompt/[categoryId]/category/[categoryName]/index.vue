@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-[50px]">
+  <div class="mt-[50px] md:mt-auto">
     <PromptsPromptsSearch @searchRendered="onSearchRendered" />
     <p
       v-if="!searchRendered || prompts.isLoading"

@@ -17,6 +17,7 @@
           :style="`background: ${generate()}`"
           v-for="prompt in userPrompts"
           :key="prompt.id"
+          @click="async () => await handlePromptClick(prompt.promptId)"
         >
           <p
             class="text-[18px] font-semibold leading-[21px] text-center text-white h-full overflow-hidden text-ellipsis mt-2"
@@ -42,6 +43,7 @@
 const route = useRoute();
 const userPrompts = ref([]);
 const searchNoPrompts = ref(false);
+const navigatePromptVal = ref(null);
 
 const skipPag = ref(0);
 const takePag = ref(10);
@@ -163,6 +165,28 @@ const handleSearch = async (e) => {
 };
 
 userPrompts.value = await fetchPrompts();
+
+const handlePromptClick = async (PROMPT_ID) => {
+  const { data } = await useFetch("/api/user/prompts", {
+    method: "GET",
+    query: {
+      getPromptById: true,
+      promptId: PROMPT_ID,
+    },
+  });
+
+  if (data?.value?.result?.prompts) {
+    navigatePromptVal.value = data.value.result.prompts;
+
+    if (navigatePromptVal.value) {
+      await navigateTo(
+        `/prompts/prompt/${navigatePromptVal.value.categoryName}/${navigatePromptVal.value.id}/${navigatePromptVal.value.title}`
+      );
+    }
+  }
+
+  return data;
+};
 </script>
 
 <style scoped>

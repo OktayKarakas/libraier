@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="bg-black w-[275px] h-[28px] mx-auto mt-[50px] rounded-tr-[15px] rounded-tl-[15px] relative"
+      class="bg-black w-[275px] lg:w-[871px] h-[28px] mx-auto mt-[50px] rounded-tr-[15px] rounded-tl-[15px] relative"
     >
       <div class="absolute top-0 right-0 flex gap-2 mr-[17px] mt-[7px]">
         <div class="w-[13px] h-[13px] rounded-full bg-[#00CA4E]"></div>
@@ -10,8 +10,14 @@
       </div>
     </div>
     <div
-      class="background-color w-[275px] h-[501px] mx-auto rounded-br-[15px] rounded-bl-[15px] code-block-shadow"
+      class="background-color w-[275px] lg:w-[871px] h-[501px] mx-auto rounded-br-[15px] rounded-bl-[15px] code-block-shadow flex flex-col lg:hidden"
     >
+      <LandingTryItNowCodeBlockInner />
+    </div>
+    <div
+      class="background-color hidden w-[275px] lg:w-[871px] h-[501px] mx-auto rounded-br-[15px] rounded-bl-[15px] code-block-shadow lg:grid lg:grid-cols-2"
+    >
+      <LandingTryItNowCodeBlockInner />
       <LandingTryItNowCodeBlockInner />
     </div>
   </div>

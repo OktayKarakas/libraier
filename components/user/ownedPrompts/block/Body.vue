@@ -15,6 +15,7 @@
         class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] max-h-[143px] min-h-[143px] carousel__item"
         :style="`background: ${generate()}`"
         v-for="prompt in userPrompts"
+        @click="async () => await handlePromptClick(prompt.promptId)"
         :key="prompt.id"
       >
         <p
@@ -40,6 +41,7 @@
 const route = useRoute();
 const userPrompts = ref([]);
 const searchNoPrompts = ref(false);
+const navigatePromptVal = ref();
 
 const skipPag = ref(0);
 const takePag = ref(10);
@@ -161,6 +163,28 @@ const handleSearch = async (e) => {
 };
 
 userPrompts.value = await fetchPrompts();
+
+const handlePromptClick = async (PROMPT_ID) => {
+  const { data } = await useFetch("/api/user/prompts", {
+    method: "GET",
+    query: {
+      getPromptById: true,
+      promptId: PROMPT_ID,
+    },
+  });
+
+  if (data?.value?.result?.prompts) {
+    navigatePromptVal.value = data.value.result.prompts;
+
+    if (navigatePromptVal.value) {
+      await navigateTo(
+        `/prompts/prompt/${navigatePromptVal.value.categoryName}/${navigatePromptVal.value.id}/${navigatePromptVal.value.title}`
+      );
+    }
+  }
+
+  return data;
+};
 </script>
 
 <style scoped>

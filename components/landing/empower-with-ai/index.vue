@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="lg:h-screen">
     <LandingEmpowerWithAiTitleText />
     <LandingEmpowerWithAiCodeBlock />
   </div>
