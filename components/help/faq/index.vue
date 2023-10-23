@@ -1,13 +1,15 @@
 <template>
   <div class="mt-[55px] mb-[80px]">
-    <div class="w-[265px] mx-auto">
+    <div class="w-[265px] lg:w-[746px] mx-auto">
       <div>
-        <h3 class="w-[186px] text-[18px] font-bold leading-[21px] heading">
+        <h3
+          class="w-[186px] lg:w-auto text-[18px] font-bold leading-[21px] heading lg:text-[24px]"
+        >
           Frequently asked questions
         </h3>
       </div>
 
-      <div class="w-[264px]">
+      <div class="w-[264px] lg:w-[648px]">
         <div v-for="(faq, index) in faqs" :key="index">
           <div class="heading-container">
             <div
@@ -15,7 +17,7 @@
               @click="handleClick(index)"
             >
               <h4
-                class="heading text-[14px] font-semibold leading-[17px] w-[85%]"
+                class="heading text-[14px] font-semibold leading-[17px] w-[85%] lg:text-[16px] lg:font-semibold"
               >
                 {{ faq.question }}
               </h4>
@@ -33,7 +35,7 @@
               </div>
             </div>
             <p
-              class="w-full text-[12px] leading-[14px] mt-[18px]"
+              class="w-full text-[12px] leading-[14px] mt-[18px] lg:text-[16px] lg:leading-none"
               v-if="reactiveElements[index].showAnswer"
             >
               {{ faq.answer }}

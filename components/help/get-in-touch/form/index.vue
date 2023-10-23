@@ -1,6 +1,6 @@
 <template>
-  <div class="px-[15px]">
-    <div class="flex justify-between">
+  <div class="px-[15px] lg:py-[140px] lg:px-[40px] border-l border-slate-500">
+    <div class="flex justify-between lg:gap-[30px]">
       <div class="pb-[27px] flex flex-col gap-[10px]">
         <label class="text-white text-[14px] font-normal" for="firstName"
           >First Name</label
@@ -10,7 +10,7 @@
           name="firstName"
           id="firstName"
           v-model="formObj.firstName"
-          class="w-[112px] border text-white border-[rgba(255,255,255,0.35)] bg-[#252525] rounded-[5px]"
+          class="w-[112px] border text-white border-[rgba(255,255,255,0.35)] bg-[#252525] rounded-[5px] lg:w-[157px] lg:h-[27px]"
         />
       </div>
       <div class="pb-[27px] flex flex-col gap-[10px]">
@@ -22,7 +22,7 @@
           name="lastName"
           id="lastName"
           v-model="formObj.lastName"
-          class="w-[112px] border text-white border-[rgba(255,255,255,0.35)] bg-[#252525] rounded-[5px]"
+          class="w-[112px] border text-white border-[rgba(255,255,255,0.35)] bg-[#252525] rounded-[5px] lg:w-[157px] lg:h-[27px]"
         />
       </div>
     </div>
@@ -35,7 +35,7 @@
         name="email"
         for="email"
         v-model="formObj.email"
-        class="border text-white border-[rgba(255,255,255,0.35)] bg-[#252525] rounded-[5px]"
+        class="border text-white border-[rgba(255,255,255,0.35)] bg-[#252525] rounded-[5px] lg:h-[27px]"
       />
     </div>
     <div class="flex flex-col gap-[10px] pb-[27px]">
@@ -47,7 +47,7 @@
         name="phoneNumber"
         for="phoneNumber"
         v-model="formObj.phoneNumber"
-        class="border text-white border-[rgba(255,255,255,0.35)] bg-[#252525] rounded-[5px]"
+        class="border text-white border-[rgba(255,255,255,0.35)] bg-[#252525] rounded-[5px] lg:h-[27px]"
       />
     </div>
     <div class="flex flex-col gap-[10px] pb-[25px]">

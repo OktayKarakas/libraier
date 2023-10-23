@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="lg:hidden">
     <h3 class="heading text-[32px] font-bold text-center mb-[40px]">
       Categories
     </h3>
@@ -36,6 +36,105 @@
           <option value="past week">Past Week</option>
           <option value="past day">Past Day</option>
         </select>
+      </div>
+    </div>
+  </div>
+  <!-- pc start -->
+  <div class="hidden lg:flex mt-[15px]">
+    <div>
+      <div
+        class="w-[307px] h-[59px] bg-white gap-5 flex items-center rounded-[10px]"
+      >
+        <img
+          src="~/assets/categories/searchIcon.svg"
+          class="w-[12px] h-[12px] ml-[12px]"
+        />
+        <input
+          type="text"
+          placeholder="Search"
+          class="text-[14px] my-auto outline-none focus:ring-0 border-0"
+          v-model="searchInput"
+        />
+      </div>
+      <div
+        class="pl-[22px] pr-[80px] py-[40px] bg-black bg-opacity-10 w-[203px] rounded-[15px] border-black border border-opacity-30 mt-[50px]"
+      >
+        <h3 class="text-white">Sort By</h3>
+        <ul class="list-none">
+          <li>
+            <input
+              type="radio"
+              id="top"
+              name="sorting"
+              value="top"
+              v-model="selectOptionOne"
+            />
+            <label for="top"> Top</label>
+          </li>
+          <li>
+            <input
+              type="radio"
+              id="newest"
+              name="sorting"
+              value="newest"
+              v-model="selectOptionOne"
+            />
+            <label for="newest"> Newest</label>
+          </li>
+          <li>
+            <input
+              type="radio"
+              id="popular"
+              name="sorting"
+              value="popular"
+              v-model="selectOptionOne"
+            />
+            <label for="popular"> Popular</label>
+          </li>
+        </ul>
+        <h3 class="mt-5 text-white whitespace-nowrap">Last Updated</h3>
+        <ul class="list-none whitespace-nowrap">
+          <li>
+            <input
+              type="radio"
+              id="all time"
+              name="time_sorting"
+              value="all time"
+              v-model="selectOptionTwo"
+            />
+            <label for="top"> All time</label>
+          </li>
+          <li>
+            <input
+              type="radio"
+              id="past month"
+              name="time_sorting"
+              value="past month"
+              v-model="selectOptionTwo"
+            />
+            <label for="newest"> Past month</label>
+          </li>
+          <li>
+            <input
+              type="radio"
+              id="past week"
+              name="time_sorting"
+              value="past week"
+              v-model="selectOptionTwo"
+            />
+            <label for="popular"> Past week</label>
+          </li>
+          <li>
+            <input
+              type="radio"
+              id="past day"
+              name="time_sorting"
+              value="past day"
+              v-model="selectOptionTwo"
+            />
+            <label for="popular"> Yesterday</label>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
