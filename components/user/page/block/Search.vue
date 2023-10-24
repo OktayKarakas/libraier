@@ -1,16 +1,16 @@
 <template>
   <div
-    class="w-[192px] h-[46px] bg-white gap-[7px] flex items-center rounded-[10px] mx-auto mb-[30px]"
+    class="w-[192px] lg:w-[535px] lg:h-[59px] h-[46px] bg-white gap-[7px] flex items-center rounded-[10px] mx-auto mb-[30px]"
   >
     <img
       src="~/assets/categories/searchIcon.svg"
-      class="w-[12px] h-[12px] ml-[12px]"
+      class="w-[12px] h-[12px] lg:w-[20px] lg:h-[20px] ml-[12px]"
     />
     <input
       type="text"
       placeholder="Search username's Prompts"
       v-model="searchInput"
-      class="text-[10px] my-auto outline-none focus:ring-0 w-full mr-[5px] border-0"
+      class="text-[10px] lg:text-[20px] my-auto outline-none focus:ring-0 w-full mr-[5px] border-0"
     />
   </div>
 </template>

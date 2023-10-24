@@ -1,8 +1,15 @@
 <template>
-  <div class="flex flex-col items-center">
-    <div class="grid grid-cols-2 gap-[20px] w-[281px] mx-auto mb-[60px]">
+  <div class="flex flex-col items-center lg:w-[726px] lg:mb-[200px]">
+    <h3
+      class="heading font-bold text-center mb-[40px] text-[60px] hidden lg:block"
+    >
+      {{ routeBasedTitle }}
+    </h3>
+    <div
+      class="grid grid-cols-2 gap-[20px] lg:gap-[40px] w-[281px] lg:w-[726px] mx-auto mb-[60px]"
+    >
       <div
-        class="w-[130px] h-[143px] promptBlock text-center flex flex-wrap items-center cursor-pointer"
+        class="w-[130px] lg:w-[341px] lg:h-[176px] h-[143px] promptBlock text-center flex flex-wrap items-center cursor-pointer"
         v-for="prompt in prompts.promptsArr"
         :key="prompt.id"
         @click="async () => await navigateToPrompt(prompt)"
@@ -35,7 +42,14 @@
 <script setup>
 import { useNoPromptsStore, useFetchPrompts } from "@/stores/prompts/index.ts";
 const store = useNoPromptsStore();
-
+const route = useRoute();
+const routeBasedTitle = computed(() => {
+  const words = route.params.categoryName.split("_");
+  const capitalizedWords = words.map(
+    (word) => word.charAt(0).toUpperCase() + word.slice(1)
+  );
+  return capitalizedWords.join(" ");
+});
 const prompts = useFetchPrompts();
 
 const handleClick = () => {

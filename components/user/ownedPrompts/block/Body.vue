@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="lg:max-w-[1250px] mx-auto">
     <UserOwnedPromptsBlockSearch
       @searchInputUserPrompt="(e) => handleSearch(e)"
       @searchInputEmpty="(e) => handleInputEmpty(e)"
@@ -10,16 +10,16 @@
     >
       Owned Prompts
     </h3>
-    <div class="px-3 grid grid-cols-3 gap-3 gap-y-5 pb-[50px]">
+    <div class="px-3 grid grid-cols-3 lg:grid-cols-4 gap-3 gap-y-5 pb-[50px]">
       <div
-        class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] max-h-[143px] min-h-[143px] carousel__item"
+        class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] max-h-[143px] min-h-[143px] lg:max-w-none lg:w-[205px] lg:h-[125px] lg:max-h-[125px] lg:cursor-pointer lg:min-h-[106px]"
         :style="`background: ${generate()}`"
         v-for="prompt in userPrompts"
         @click="async () => await handlePromptClick(prompt.promptId)"
         :key="prompt.id"
       >
         <p
-          class="text-[18px] font-semibold leading-[21px] text-center text-white h-full overflow-hidden text-ellipsis mt-2"
+          class="text-[18px] font-semibold leading-[21px] text-center text-white text-ellipsis mt-2 lg:w-full lg:h-full text lg:px-2"
         >
           {{ prompt.promptTitle }}
         </p>
@@ -190,5 +190,13 @@ const handlePromptClick = async (PROMPT_ID) => {
 <style scoped>
 .block {
   background: linear-gradient(119.37deg, #09aead 32%, #3d3895 113.86%);
+}
+.text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to a maximum of two lines */
+  -webkit-box-orient: vertical;
+  white-space: normal; /* Allow text to wrap within the container */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis (...) for truncated text */
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="bg-[#121A2A]">
+  <div class="max-w-[1250px] mx-auto mb-[175px]">
+    <div class="bg-[#121A2A] px-5 rounded-[15px] border">
       <UserPageBlockHeader />
       <UserPageBlockBody />
     </div>

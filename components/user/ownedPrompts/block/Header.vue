@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="lg:max-w-[1250px] mx-auto pt-5">
     <div class="flex justify-between px-[15px] pt-[14px]">
       <!-- left -->
       <div class="flex items-center gap-[7px]">
@@ -18,7 +18,9 @@
           src="~/assets/user/user-template-photo-setting.jpg"
           class="w-[24px] h-[24px] rounded-full object-cover"
         />
-        <p class="text-[12px] font-normal leading-[15px] text-white">
+        <p
+          class="text-[12px] font-normal leading-[15px] text-white lg:text-[20px] lg:font-semibold"
+        >
           {{ userData?.username || "Loading..." }}
         </p>
       </div>
@@ -37,9 +39,10 @@
     <!-- description -->
     <div class="pt-[17px] pb-[30px]">
       <p
-        class="text-[#8B8B8B] text-[10px] font-normal leading-[12px] max-w-[274px] mx-auto"
+        class="text-[#8B8B8B] text-[10px] font-normal leading-[12px] max-w-[274px] lg:text-[12px] mx-auto lg:mx-6 h-auto lg:max-w-none"
+        style="word-wrap: break-word"
       >
-        {{ userData?.description || "..." }}
+        {{ userData?.description || "There is no description for this user" }}
       </p>
     </div>
   </div>
