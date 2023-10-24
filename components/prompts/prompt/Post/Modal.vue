@@ -2,12 +2,14 @@
   <div
     id="defaultModal"
     tabindex="-1"
-    class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+    class="fixed top-0 left-0 right-0 z-50 w-full p-4 md:inset-0 h-[calc(100%-1rem)] max-h-full"
     v-if="isModalOpen"
   >
-    <div class="relative w-full max-w-2xl max-h-full">
+    <div class="flex items-center justify-center min-h-screen">
       <!-- Modal content -->
-      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+      <div
+        class="relative bg-white rounded-lg shadow dark:bg-gray-700 max-w-[450px]"
+      >
         <!-- Modal header -->
         <div
           class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
@@ -40,7 +42,7 @@
           </button>
         </div>
         <!-- Modal body -->
-        <div class="p-6 space-y-6">
+        <div class="p-6 space-y-6 max-h-[300px] overflow-auto">
           <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
             With less than a month to go before the European Union enacts new
             consumer privacy laws for its citizens, companies around the world

@@ -1,8 +1,22 @@
 <template>
-  <Carousel :items-to-show="2.6" :wrap-around="false">
+  <Carousel :items-to-show="2.6" :wrap-around="false" class="lg:hidden">
     <Slide v-for="slide in data" :key="slide.id">
       <div
-        class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] min-h-[143px] max-h-[143px] block carousel__item overflow-hidden text-center flex-wrap items-center cursor-pointer"
+        class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] min-h-[143px] lg:min-w-[341px] lg:max-w-[341px] lg:w-[341px] max-h-[143px] block carousel__item overflow-hidden text-center flex-wrap items-center cursor-pointer"
+        @click="handleClick(slide.categoryName, slide.id, slide.title)"
+      >
+        <p
+          class="text-[18px] font-semibold leading-[21px] text-center text-white"
+        >
+          {{ handlePromptName(slide.title) }}
+        </p>
+      </div>
+    </Slide>
+  </Carousel>
+  <Carousel :items-to-show="4" :wrap-around="false" class="hidden lg:block">
+    <Slide v-for="slide in data" :key="slide.id">
+      <div
+        class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] min-h-[143px] lg:min-w-[341px] lg:max-w-[341px] lg:w-[341px] max-h-[143px] block carousel__item overflow-hidden text-center flex-wrap items-center cursor-pointer"
         @click="handleClick(slide.categoryName, slide.id, slide.title)"
       >
         <p

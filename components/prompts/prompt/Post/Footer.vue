@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-black w-[299px] h-auto mx-auto text-white pt-[16px] pb-[20px] px-[10px] mb-[120px]"
+    class="bg-black w-[299px] lg:w-[1000px] h-auto mx-auto text-white pt-[16px] pb-[20px] px-[10px] mb-[120px]"
   >
     <!-- top -->
     <div class="flex justify-between">
@@ -9,38 +9,36 @@
         <img
           src="~/assets/prompt/HeartFilled.svg"
           v-if="isUserFavoritePrompt"
-          class="w-[24px] h-[24px] cursor-pointer"
+          class="w-[24px] h-[24px] lg:w-[36px] lg:h-[36px] cursor-pointer"
           @click="triggeredUnFavorite"
         />
         <img
           src="~/assets/prompt/HeartOutline.svg"
           v-else
-          class="w-[24px] h-[24px] cursor-pointer"
+          class="w-[24px] h-[24px] lg:w-[36px] lg:h-[36px] cursor-pointer"
           @click="triggeredFavorite"
-        />
-        <img
-          src="~/assets/prompt/ChatOutline.svg"
-          class="w-[24px] h-[24px] cursor-pointer"
         />
       </div>
     </div>
     <!-- mid -->
     <button
-      class="py-[14px] px-[24px] bg-white text-black font-bold text-[12px] leading-[14px] my-[10px]"
+      class="py-[14px] px-[24px] bg-white text-black font-bold text-[12px] leading-[14px] my-[10px] lg:text-[24px] lg:w-[186px] lg:h-[56px] whitespace-nowrap"
       @click="handleGetPrompt"
       v-if="!isUserHasPrompt"
     >
       Get Prompt
     </button>
     <button
-      class="py-[14px] px-[24px] bg-white text-black font-bold text-[12px] leading-[14px] my-[10px]"
+      class="py-[14px] px-[24px] bg-white text-black font-bold text-[12px] leading-[14px] my-[10px] lg:text-[24px] lg:w-[186px] lg:h-[56px] whitespace-nowrap"
       @click="store.modalHandler('open')"
       v-else
     >
       See Prompt
     </button>
     <!-- bottom -->
-    <p class="text-[8px] font-bold leading-[9px] text-[#AAAAAA] max-w-[258px]">
+    <p
+      class="text-[8px] font-bold leading-[9px] text-[#AAAAAA] max-w-[258px] lg:text-[12px] lg:leading-none lg:max-w-[453px]"
+    >
       After purchasing, you will gain access to the prompt file, which you can
       use with ChatGPT. You must already have access to ChatGPT to use this
       prompt.

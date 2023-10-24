@@ -2,12 +2,14 @@
   <div class="mb-[29px]">
     <div class="flex flex-col items-center">
       <div class="w-[200px]">
-        <h3 class="text-[12px] font-bold italic leading-[14px] categoryHeading">
+        <h3
+          class="text-[12px] font-bold italic leading-[14px] categoryHeading lg:text-[24px] lg:leading-none"
+        >
           {{ routeBasedTitle }} /
         </h3>
       </div>
       <h1
-        class="w-[210px] max-w-[210px] max-h-[200px] text-[32px] font-bold text-center leading-[38px] heading text"
+        class="w-[210px] max-w-[210px] max-h-[200px] text-[32px] font-bold text-center leading-[38px] heading text lg:text-[60px] lg:max-w-none lg:w-full lg:max-h-none lg:h-full lg:leading-none"
       >
         {{ handlePromptName(promptName) }}
       </h1>

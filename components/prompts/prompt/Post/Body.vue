@@ -1,7 +1,9 @@
 <template>
-  <div class="bg-[#001C30] h-auto w-[299px] mx-auto flex flex-col px-4">
+  <div
+    class="bg-[#001C30] h-auto w-[299px] lg:w-[1000px] mx-auto flex flex-col px-4"
+  >
     <div
-      class="font-bold text-[14px] text-white max-w-[260px] py-[20px]"
+      class="font-bold text-[14px] text-white max-w-[260px] lg:max-w-none py-[20px]"
       v-dompurify-html="description.description"
     ></div>
 
