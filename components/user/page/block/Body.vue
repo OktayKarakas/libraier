@@ -10,6 +10,7 @@
     >
       Created Prompts
     </h3>
+
     <div class="px-3 grid grid-cols-3 lg:grid-cols-4 gap-3 gap-y-5 pb-[50px]">
       <div
         class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] max-h-[143px] min-h-[143px] lg:max-w-none lg:w-[205px] lg:h-[125px] lg:max-h-[125px] lg:cursor-pointer lg:min-h-[106px]"
@@ -40,6 +41,7 @@
 <script setup>
 const route = useRoute();
 const userPrompts = ref([]);
+const newArray = new Array(300);
 
 const skipPag = ref(0);
 const takePag = ref(10);
