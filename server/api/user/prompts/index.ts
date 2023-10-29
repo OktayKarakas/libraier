@@ -650,41 +650,6 @@ export default defineEventHandler(async (event) => {
           }
         }
       } else if (query.getPromptsByCategoryName) {
-        const total = await prisma.prompt.count();
-        let skip = 0;
-
-        if (total <= 11 && total > 6) {
-          skip = Math.floor(Math.random() * 3) + 1;
-          let checkIfNumOk: number = total - skip;
-
-          if (checkIfNumOk < 6) {
-            for (let i = 0; checkIfNumOk < 6; i++) {
-              skip--;
-              checkIfNumOk++;
-            }
-          }
-          if (skip < 0) {
-            skip = 0;
-          }
-        } else if (total > 11) {
-          skip = Math.floor(Math.random() * total - 6);
-
-          if (skip >= total) {
-            skip = total - 6;
-          }
-
-          if (skip < 0) {
-            skip = 0;
-          }
-
-          const checkIfNumOk: number = total - skip;
-
-          if (checkIfNumOk < 6) {
-            for (let i = 0; i++; total - skip > 6) {
-              skip--;
-            }
-          }
-        }
         if (typeof query.promptCategory === "string") {
           const categories = await prisma.prompt.findMany({
             where: {
@@ -692,8 +657,15 @@ export default defineEventHandler(async (event) => {
                 startsWith: query.promptCategory,
               },
             },
+            orderBy: [
+              {
+                updatedAt: "desc",
+              },
+              {
+                id: "desc", // Use id as a secondary sorting field in descending order
+              },
+            ],
             take: 6,
-            skip,
           });
           return {
             categories,

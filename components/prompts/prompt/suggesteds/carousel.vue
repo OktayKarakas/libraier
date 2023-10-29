@@ -13,7 +13,12 @@
       </div>
     </Slide>
   </Carousel>
-  <Carousel :items-to-show="4" :wrap-around="false" class="hidden lg:block">
+  <Carousel
+    :items-to-show="3"
+    :wrap-around="false"
+    class="hidden lg:block"
+    v-if="data.length >= 3"
+  >
     <Slide v-for="slide in data" :key="slide.id">
       <div
         class="pt-[30px] pb-[50px] min-w-[113px] max-w-[113px] min-h-[143px] lg:min-w-[341px] lg:max-w-[341px] lg:w-[341px] max-h-[143px] block carousel__item overflow-hidden text-center flex-wrap items-center cursor-pointer"

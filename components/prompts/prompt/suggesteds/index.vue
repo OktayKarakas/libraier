@@ -1,5 +1,5 @@
 <template>
-  <div class="border-b border-black mb-[7px] pb-[24px] borderOpacity">
+  <div class="border-b border-black pb-[24px] borderOpacity mb-[20px]">
     <h3
       class="text-[24px] font-bold leading-[28px] text-[#D9D9D9] ml-[17px] heading"
     >
