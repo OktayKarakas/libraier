@@ -15,7 +15,6 @@
 
 <script setup>
 const props = defineProps(["firstEl", "secondEl"]);
-console.log(props.firstEl);
 </script>
 
 <style scoped>
